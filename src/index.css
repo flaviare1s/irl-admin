@@ -8,3 +8,7 @@
   --color-greenery: #88B04B;
   --color-radiant-orchid: #AD5E99;
 }
+
+body {
+  font-family: 'Nunito', sans-serif;
+}
