@@ -131,7 +131,7 @@ export const ClassDetails = () => {
             <h3 className="text-lg font-semibold text-gray-900">Alunos ({students.length})</h3>
             <button
               onClick={() => setShowAddStudent(!showAddStudent)}
-              className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors w-full sm:w-auto cursor-pointer"
+              className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors w-full sm:w-auto cursor-pointer mb-1"
             >
               <UserPlus className="w-4 h-4" />
               <span>Adicionar Aluno</span>
