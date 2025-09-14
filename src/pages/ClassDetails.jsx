@@ -12,6 +12,7 @@ import {
   addStudent
 } from "../firebase/class";
 import { Student } from "../components/Student";
+import { Loader } from "../components/Loader";
 
 export const ClassDetails = () => {
   const { id: classId } = useParams();
@@ -89,14 +90,12 @@ export const ClassDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <Loader />
     );
   }
 
   return (
-    <div className="min-h-screen p-4 sm:p-6">
+    <div className="min-h-screen p-3 sm:p-6 w-full sm:max-w-[600px]">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
@@ -109,7 +108,7 @@ export const ClassDetails = () => {
         </div>
 
         {/* Date Selector */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 mb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center space-x-3">
               <Calendar className="w-5 h-5 text-primary" />
@@ -127,8 +126,8 @@ export const ClassDetails = () => {
         </div>
 
         {/* Add Student */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h3 className="text-lg font-semibold text-gray-900">Alunos ({students.length})</h3>
             <button
               onClick={() => setShowAddStudent(!showAddStudent)}
@@ -161,7 +160,7 @@ export const ClassDetails = () => {
 
         {/* Students List */}
         {students.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-1">
             {students.map(student => (
               <Student
                 key={student.id}
