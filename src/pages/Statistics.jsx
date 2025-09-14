@@ -13,7 +13,7 @@ import {
   getClassStats,
   getHomeworkBackpackStats
 } from '../firebase/class';
-import { Calendar, BarChart3, TrendingUp, Users } from 'lucide-react';
+import { Users, BookOpenCheck, Backpack, Users2 } from 'lucide-react';
 
 export const Statistics = () => {
   const [loading, setLoading] = useState(true);
@@ -100,7 +100,7 @@ export const Statistics = () => {
   }
 
   return (
-    <div className="min-h-screen p-6 bg-gray-50">
+    <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -158,7 +158,7 @@ export const Statistics = () => {
         </div>
 
         {/* Cards de resumo */}
-        <div className="grid md:grid-cols-5 gap-4 mb-8">
+        <div className="grid md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
@@ -172,40 +172,29 @@ export const Statistics = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Média - Tarefa</p>
+                <p className="text-sm font-medium text-gray-600">Tarefa</p>
                 <p className="text-2xl font-bold text-primary">{overallStats.homeworkPercentage}%</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-primary" />
+              <BookOpenCheck className="h-8 w-8 text-primary" />
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Média - Mochila</p>
+                <p className="text-sm font-medium text-gray-600">Mochila</p>
                 <p className="text-2xl font-bold text-living-coral">{overallStats.backpackPercentage}%</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-living-coral" />
+              <Backpack className="h-8 w-8 text-living-coral" />
             </div>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Registros</p>
-                <p className="text-2xl font-bold text-gray-600">{overallStats.totalRecords}</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-gray-600" />
-            </div>
-          </div>
-
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Turmas Ativas</p>
                 <p className="text-2xl font-bold text-radiant-orchid">{classesData.length}</p>
               </div>
-              <Calendar className="h-8 w-8 text-radiant-orchid" />
+              <Users2 className="h-8 w-8 text-radiant-orchid" />
             </div>
           </div>
         </div>

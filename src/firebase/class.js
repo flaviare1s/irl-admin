@@ -375,9 +375,10 @@ export const getHomeworkBackpackStats = async (
 
           for (let record of records) {
             totalRecords++;
-            if (record.present) presentCount++;
-            if (record.homework) homeworkBrought++;
-            if (record.backpack) backpackBrought++;
+            // Verificar se está presente usando a propriedade correta
+            if (record.present === true) presentCount++;
+            if (record.homework === true) homeworkBrought++;
+            if (record.backpack === true) backpackBrought++;
           }
         }
       }
@@ -460,9 +461,9 @@ export const getClassStats = async (classId) => {
 
         for (let record of records) {
           totalRecords++;
-          if (record.present) presentCount++;
-          if (record.homework) homeworkBrought++;
-          if (record.backpack) backpackBrought++;
+          if (record.present === true) presentCount++;
+          if (record.homework === true) homeworkBrought++;
+          if (record.backpack === true) backpackBrought++;
         }
       }
     }
@@ -498,6 +499,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
     const snapshot = await getDocs(q);
 
     let totalStudents = 0;
+    let presentStudents = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
     const classesStat = [];
@@ -509,6 +511,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
         (student) => student.status === "active"
       );
 
+      let classPresent = 0;
       let classHomework = 0;
       let classBackpack = 0;
       let classStudents = 0;
@@ -519,11 +522,15 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
           classStudents++;
           totalStudents++;
 
-          if (record.homework) {
+          if (record.present === true) {
+            classPresent++;
+            presentStudents++;
+          }
+          if (record.homework === true) {
             classHomework++;
             homeworkBrought++;
           }
-          if (record.backpack) {
+          if (record.backpack === true) {
             classBackpack++;
             backpackBrought++;
           }
@@ -535,6 +542,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
           classId: turma.id,
           className: turmaData.name,
           students: classStudents,
+          attendancePercentage: Math.round((classPresent / classStudents) * 100),
           homeworkPercentage: Math.round((classHomework / classStudents) * 100),
           backpackPercentage: Math.round((classBackpack / classStudents) * 100),
         });
@@ -544,6 +552,10 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
     return {
       date,
       totalStudents,
+      attendancePercentage:
+        totalStudents > 0
+          ? Math.round((presentStudents / totalStudents) * 100)
+          : 0,
       homeworkPercentage:
         totalStudents > 0
           ? Math.round((homeworkBrought / totalStudents) * 100)
@@ -582,6 +594,13 @@ export const getMonthlyStats = async (
 
     // Calcular médias mensais
     const totalDays = dailyStats.length;
+    const avgAttendance =
+      totalDays > 0
+        ? Math.round(
+            dailyStats.reduce((sum, day) => sum + day.attendancePercentage, 0) /
+              totalDays
+          )
+        : 0;
     const avgHomework =
       totalDays > 0
         ? Math.round(
@@ -601,6 +620,7 @@ export const getMonthlyStats = async (
       year,
       month,
       dailyStats,
+      averageAttendancePercentage: avgAttendance,
       averageHomeworkPercentage: avgHomework,
       averageBackpackPercentage: avgBackpack,
       totalDaysWithData: totalDays,
