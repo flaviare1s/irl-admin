@@ -115,7 +115,7 @@ export const Dashboard = () => {
                 {classData.map(cls => (
                   <li
                     key={cls.id}
-                    className="flex justify-between items-center py-2 cursor-pointer hover:bg-gray-100"
+                    className="flex justify-between items-center p-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => navigate(`/class/${cls.id}`)}
                   >
                     <span className="text-gray-700">{cls.name}</span>
