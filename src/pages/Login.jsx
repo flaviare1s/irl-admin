@@ -11,7 +11,7 @@ export const Login = () => {
   function login(data) {
     loginUsuario(data.email, data.senha).then(() => {
       toast.success('Bem-vindo(a) ao IRL!')
-      navigate('/home')
+      navigate('/dashboard')
     }).catch((error) => {
       toast.error(`Um erro aconteceu: ${error.code}`)
     })
