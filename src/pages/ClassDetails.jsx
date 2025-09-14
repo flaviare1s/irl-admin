@@ -3,16 +3,19 @@ import { useParams } from "react-router-dom";
 import {
   Calendar,
   Users,
-  UserPlus
+  UserPlus,
+  Settings
 } from "lucide-react";
 import {
   getClassById,
   getAttendanceByDate,
   addDailyAttendance,
-  addStudent
+  addStudent,
+  updateClass
 } from "../firebase/class";
 import { Student } from "../components/Student";
 import { Loader } from "../components/Loader";
+import { EditClass } from "../components/EditClass";
 
 export const ClassDetails = () => {
   const { id: classId } = useParams();
@@ -22,6 +25,7 @@ export const ClassDetails = () => {
   const [loading, setLoading] = useState(true);
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [newStudentName, setNewStudentName] = useState("");
+  const [showEditClass, setShowEditClass] = useState(false);
 
   useEffect(() => {
     loadClassData();
@@ -88,11 +92,27 @@ export const ClassDetails = () => {
     }
   };
 
+  const handleEditClass = () => {
+    setShowEditClass(true);
+  };
+
+  const handleSaveClass = async (editData) => {
+    try {
+      await updateClass(classId, editData);
+      setClassData({ ...classData, ...editData });
+      setShowEditClass(false);
+    } catch (error) {
+      console.error("Error updating class:", error);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setShowEditClass(false);
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <Loader />
     );
   }
 
@@ -101,11 +121,21 @@ export const ClassDetails = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-2">
-            {classData?.name || "Turma não encontrada"}
-          </h1>
+          <div className="flex items-center justify-between mb-2">
+            <div></div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center">
+              {classData?.name || "Turma não encontrada"}
+            </h1>
+            <button
+              onClick={handleEditClass}
+              className="p-2 text-gray-500 hover:text-primary rounded-full cursor-pointer"
+              title="Editar turma"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+          </div>
           {classData?.responsible && (
-            <p className="text-sm text-gray-500">Responsável: {classData.responsible}</p>
+            <p className="text-sm text-gray-500 text-center">Responsável: {classData.responsible}</p>
           )}
         </div>
 
@@ -178,6 +208,15 @@ export const ClassDetails = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Edição */}
+      {showEditClass && (
+        <EditClass
+          classData={classData}
+          onSave={handleSaveClass}
+          onCancel={handleCancelEdit}
+        />
+      )}
     </div>
   );
 };
