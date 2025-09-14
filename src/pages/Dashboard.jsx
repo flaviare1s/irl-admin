@@ -3,12 +3,9 @@ import {
   Users,
   GraduationCap,
   BookOpen,
-  TrendingUp,
-  Calendar,
-  Activity,
-  UsersRound,
   BookOpenCheck,
-  Backpack
+  Backpack,
+  Percent,
 } from 'lucide-react';
 import { StatiticCard } from '../components/StatiticCard';
 import { QuickStat } from '../components/QuickStat';
@@ -27,6 +24,7 @@ export const Dashboard = () => {
   });
   const [classData, setClassData] = useState([]);
   const [homeworkBackpackStats, setHomeworkBackpackStats] = useState({
+    attendancePercentage: 0,
     homeworkPercentage: 0,
     backpackPercentage: 0
   });
@@ -137,7 +135,7 @@ export const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <StatiticCard title="Turmas Cadastradas" value={stats.totalClasses} icon={<BookOpen className="w-6 h-6 text-white" />} />
               <StatiticCard title="Total de Alunos" value={stats.totalStudents} icon={<Users className="w-6 h-6 text-white" />} />
-             
+
             </div>
 
             {/* Gráficos e Estatísticas Rápidas */}
@@ -146,7 +144,7 @@ export const Dashboard = () => {
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-gray-900">Alunos por Turma</h3>
-                  <TrendingUp className="w-5 h-5 text-primary" />
+                  <Users className="w-5 h-5 text-primary" />
                 </div>
                 <div className="space-y-4">
                   {classData.length > 0 ? classData.map((item, index) => (
@@ -168,26 +166,26 @@ export const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Resumo Geral */}
+              {/* Média Geral */}
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">Resumo Geral</h3>
-                  <Calendar className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-semibold text-gray-900">Média Geral</h3>
+                  <Percent className="w-5 h-5 text-primary" />
                 </div>
                 <div className="space-y-6">
                   <QuickStat
                     icon={<Users className="w-4 h-4 text-primary" />}
-                    title="Média de Alunos/Turma"
-                    value={stats.totalClasses > 0 ? Math.round(stats.totalStudents / stats.totalClasses) : 0}
+                    title="Frequência"
+                    value={`${homeworkBackpackStats.attendancePercentage}%`}
                   />
                   <QuickStat
                     icon={<BookOpenCheck className="w-4 h-4 text-primary" />}
-                    title="Taxa de Tarefa Trazida"
+                    title="Tarefas"
                     value={`${homeworkBackpackStats.homeworkPercentage}%`}
                   />
                   <QuickStat
                     icon={<Backpack className="w-4 h-4 text-primary" />}
-                    title="Taxa de Mochila Trazida"
+                    title="Mochilas"
                     value={`${homeworkBackpackStats.backpackPercentage}%`}
                   />
                 </div>
