@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
 import { Header } from './components/Header'
-import { Login } from './pages/Login'
 import { ResetPassword } from './pages/ResetPassword'
 import { Loader } from './components/Loader'
 import { NotFound } from './pages/NotFound'
@@ -11,6 +10,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './firebase/config'
 import { Dashboard } from './pages/Dashboard'
 import { ScrollToTop } from './components/ScrollToTop'
+import { RedirectHome } from './components/RedirectHome'
 
 function App() {
   const [userLogged, setUserLogged] = useState(null)
@@ -34,7 +34,7 @@ function App() {
       <Header />
       <main className='flex flex-col justify-center items-center m-auto min-h-[calc(100vh-80px)] p-4'>
         <Routes>
-          <Route path='/' element={<Login />} />
+          <Route path='/' element={<RedirectHome />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/reset-password' element={<ResetPassword />} />
           <Route path='*' element={<NotFound />} />
