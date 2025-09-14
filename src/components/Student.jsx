@@ -1,4 +1,4 @@
-import { User, BookOpen, Backpack, UserCheck } from "lucide-react";
+import { User, BookOpen, Backpack, UserCheck, UserX } from "lucide-react";
 
 export const Student = ({ student, onAttendanceChange }) => {
   const isPresent = student.attendance?.isPresent;
@@ -23,7 +23,7 @@ export const Student = ({ student, onAttendanceChange }) => {
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
-          <UserCheck className="w-3 h-3" />
+          {isPresent ? <UserCheck className="w-3 h-3" /> : <UserX className="w-3 h-3" />}
           <span>{isPresent ? 'Presente' : 'Ausente'}</span>
         </button>
 
