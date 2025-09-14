@@ -100,6 +100,23 @@ export const getClassById = async (classId) => {
   }
 };
 
+// Atualizar turma
+export const updateClass = async (classId, updateData) => {
+  try {
+    if (!classId) {
+      throw new Error("ID da turma é obrigatório");
+    }
+
+    const docRef = doc(db, "turmas", classId);
+    await setDoc(docRef, updateData, { merge: true });
+
+    return { id: classId, ...updateData };
+  } catch (error) {
+    console.error("Error updating class:", error);
+    throw error;
+  }
+};
+
 // --- Alunos ---
 // Adicionar aluno
 export async function addStudent(turmaId, studentData) {

@@ -3,13 +3,15 @@ import { useParams } from "react-router-dom";
 import {
   Calendar,
   Users,
-  UserPlus
+  UserPlus,
+  Settings
 } from "lucide-react";
 import {
   getClassById,
   getAttendanceByDate,
   addDailyAttendance,
-  addStudent
+  addStudent,
+  updateClass
 } from "../firebase/class";
 import { Student } from "../components/Student";
 import { Loader } from "../components/Loader";
@@ -22,6 +24,13 @@ export const ClassDetails = () => {
   const [loading, setLoading] = useState(true);
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [newStudentName, setNewStudentName] = useState("");
+  const [showEditClass, setShowEditClass] = useState(false);
+  const [editClassData, setEditClassData] = useState({
+    name: "",
+    responsible: "",
+    year: new Date().getFullYear(),
+    status: "active"
+  });
 
   useEffect(() => {
     loadClassData();
@@ -88,6 +97,26 @@ export const ClassDetails = () => {
     }
   };
 
+  const handleEditClass = () => {
+    setEditClassData({
+      name: classData.name,
+      responsible: classData.responsible,
+      year: classData.year,
+      status: classData.status
+    });
+    setShowEditClass(true);
+  };
+
+  const handleUpdateClass = async () => {
+    try {
+      await updateClass(classId, editClassData);
+      setClassData({ ...classData, ...editClassData });
+      setShowEditClass(false);
+    } catch (error) {
+      console.error("Error updating class:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -101,11 +130,26 @@ export const ClassDetails = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-2">
-            {classData?.name || "Turma não encontrada"}
-          </h1>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex-1"></div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center flex-1">
+              {classData?.name || "Turma não encontrada"}
+            </h1>
+            <div className="flex-1 flex justify-end">
+              <button
+                onClick={handleEditClass}
+                className="p-2 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-full transition-colors"
+                title="Editar informações da turma"
+              >
+                <Settings className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
           {classData?.responsible && (
-            <p className="text-sm text-gray-500">Responsável: {classData.responsible}</p>
+            <p className="text-sm text-gray-500 text-center">Responsável: {classData.responsible}</p>
+          )}
+          {classData?.year && (
+            <p className="text-xs text-gray-400 text-center">Ano: {classData.year}</p>
           )}
         </div>
 
@@ -178,6 +222,90 @@ export const ClassDetails = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Edição da Turma */}
+      {showEditClass && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Editar Informações da Turma
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome da Turma
+                  </label>
+                  <input
+                    type="text"
+                    value={editClassData.name}
+                    onChange={(e) => setEditClassData({...editClassData, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Nome da turma"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Responsável
+                  </label>
+                  <input
+                    type="text"
+                    value={editClassData.responsible}
+                    onChange={(e) => setEditClassData({...editClassData, responsible: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Nome do responsável"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ano
+                  </label>
+                  <input
+                    type="number"
+                    value={editClassData.year}
+                    onChange={(e) => setEditClassData({...editClassData, year: parseInt(e.target.value)})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    min="2020"
+                    max="2030"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    value={editClassData.status}
+                    onChange={(e) => setEditClassData({...editClassData, status: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    <option value="active">Ativa</option>
+                    <option value="inactive">Inativa</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowEditClass(false)}
+                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleUpdateClass}
+                  className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                >
+                  Salvar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
