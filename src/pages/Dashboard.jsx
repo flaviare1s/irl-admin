@@ -50,11 +50,13 @@ export const Dashboard = () => {
       });
 
       setClassData(
-        classStats.classes.map(cls => ({
-          id: cls.id,
-          name: cls.name,
-          students: cls.studentCount
-        }))
+        classStats.classes
+          .map(cls => ({
+            id: cls.id,
+            name: cls.name,
+            students: cls.studentCount
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name))
       );
 
       setHomeworkBackpackStats(hwBpStats);
@@ -74,7 +76,7 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="lg:max-w-[1000px] p-6 w-full mx-auto">
       <div className="max-w-7xl mx-auto">
         {/* Header e seletor de ano */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -151,12 +153,6 @@ export const Dashboard = () => {
                     <div key={index} className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-600">{item.name}</span>
                       <div className="flex items-center space-x-3">
-                        <div className="bg-gray-200 rounded-full h-2 w-32">
-                          <div
-                            className="bg-primary h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${(item.students / 30) * 100}%` }}
-                          ></div>
-                        </div>
                         <span className="text-sm font-bold text-primary min-w-[2rem]">{item.students}</span>
                       </div>
                     </div>

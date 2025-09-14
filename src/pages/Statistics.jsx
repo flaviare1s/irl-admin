@@ -14,6 +14,7 @@ import {
   getHomeworkBackpackStats
 } from '../firebase/class';
 import { Users, BookOpenCheck, Backpack, Users2 } from 'lucide-react';
+import { Loader } from '../components/Loader';
 
 export const Statistics = () => {
   const [loading, setLoading] = useState(true);
@@ -93,14 +94,12 @@ export const Statistics = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <Loader />
     );
   }
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="lg:max-w-[1000px] p-6 w-full mx-auto">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

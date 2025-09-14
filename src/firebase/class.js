@@ -360,7 +360,7 @@ export const getHomeworkBackpackStats = async (
     const q = query(collection(db, "turmas"), where("year", "==", year));
     const snapshot = await getDocs(q);
 
-    let totalRecords = 0;
+    let totalStudentDays = 0;
     let presentCount = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
@@ -368,15 +368,19 @@ export const getHomeworkBackpackStats = async (
     for (let turma of snapshot.docs) {
       const turmaData = turma.data();
       const students = turmaData.students || [];
+      const activeStudents = students.filter((s) => s.status === "active");
 
-      for (let student of students) {
-        if (student.status === "active" && student.dailyRecords) {
+      // Para cada aluno ativo, verificar seus registros diários
+      for (let student of activeStudents) {
+        if (student.dailyRecords) {
           const records = Object.values(student.dailyRecords);
 
           for (let record of records) {
-            totalRecords++;
-            // Verificar se está presente usando a propriedade correta
-            if (record.present === true) presentCount++;
+            totalStudentDays++;
+
+            if (record.present === true) {
+              presentCount++;
+            }
             if (record.homework === true) homeworkBrought++;
             if (record.backpack === true) backpackBrought++;
           }
@@ -386,16 +390,18 @@ export const getHomeworkBackpackStats = async (
 
     return {
       attendancePercentage:
-        totalRecords > 0 ? Math.round((presentCount / totalRecords) * 100) : 0,
+        totalStudentDays > 0
+          ? Math.round((presentCount / totalStudentDays) * 100)
+          : 0,
       homeworkPercentage:
-        totalRecords > 0
-          ? Math.round((homeworkBrought / totalRecords) * 100)
+        totalStudentDays > 0
+          ? Math.round((homeworkBrought / totalStudentDays) * 100)
           : 0,
       backpackPercentage:
-        totalRecords > 0
-          ? Math.round((backpackBrought / totalRecords) * 100)
+        totalStudentDays > 0
+          ? Math.round((backpackBrought / totalStudentDays) * 100)
           : 0,
-      totalRecords,
+      totalRecords: totalStudentDays,
       presentCount,
       homeworkBrought,
       backpackBrought,
@@ -450,7 +456,7 @@ export const getClassStats = async (classId) => {
       (student) => student.status === "active"
     );
 
-    let totalRecords = 0;
+    let totalStudentDays = 0;
     let presentCount = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
@@ -460,7 +466,7 @@ export const getClassStats = async (classId) => {
         const records = Object.values(student.dailyRecords);
 
         for (let record of records) {
-          totalRecords++;
+          totalStudentDays++;
           if (record.present === true) presentCount++;
           if (record.homework === true) homeworkBrought++;
           if (record.backpack === true) backpackBrought++;
@@ -470,16 +476,18 @@ export const getClassStats = async (classId) => {
 
     return {
       classId,
-      totalRecords,
+      totalRecords: totalStudentDays,
       attendancePercentage:
-        totalRecords > 0 ? Math.round((presentCount / totalRecords) * 100) : 0,
+        totalStudentDays > 0
+          ? Math.round((presentCount / totalStudentDays) * 100)
+          : 0,
       homeworkPercentage:
-        totalRecords > 0
-          ? Math.round((homeworkBrought / totalRecords) * 100)
+        totalStudentDays > 0
+          ? Math.round((homeworkBrought / totalStudentDays) * 100)
           : 0,
       backpackPercentage:
-        totalRecords > 0
-          ? Math.round((backpackBrought / totalRecords) * 100)
+        totalStudentDays > 0
+          ? Math.round((backpackBrought / totalStudentDays) * 100)
           : 0,
       presentCount,
       homeworkBrought,
@@ -498,7 +506,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
     const q = query(collection(db, "turmas"), where("year", "==", year));
     const snapshot = await getDocs(q);
 
-    let totalStudents = 0;
+    let totalStudentDays = 0;
     let presentStudents = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
@@ -514,13 +522,13 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       let classPresent = 0;
       let classHomework = 0;
       let classBackpack = 0;
-      let classStudents = 0;
+      let classStudentDays = 0;
 
       for (let student of activeStudents) {
         if (student.dailyRecords && student.dailyRecords[date]) {
           const record = student.dailyRecords[date];
-          classStudents++;
-          totalStudents++;
+          classStudentDays++;
+          totalStudentDays++;
 
           if (record.present === true) {
             classPresent++;
@@ -537,32 +545,38 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
         }
       }
 
-      if (classStudents > 0) {
+      if (classStudentDays > 0) {
         classesStat.push({
           classId: turma.id,
           className: turmaData.name,
-          students: classStudents,
-          attendancePercentage: Math.round((classPresent / classStudents) * 100),
-          homeworkPercentage: Math.round((classHomework / classStudents) * 100),
-          backpackPercentage: Math.round((classBackpack / classStudents) * 100),
+          students: classStudentDays,
+          attendancePercentage: Math.round(
+            (classPresent / classStudentDays) * 100
+          ),
+          homeworkPercentage: Math.round(
+            (classHomework / classStudentDays) * 100
+          ),
+          backpackPercentage: Math.round(
+            (classBackpack / classStudentDays) * 100
+          ),
         });
       }
     }
 
     return {
       date,
-      totalStudents,
+      totalStudents: totalStudentDays,
       attendancePercentage:
-        totalStudents > 0
-          ? Math.round((presentStudents / totalStudents) * 100)
+        totalStudentDays > 0
+          ? Math.round((presentStudents / totalStudentDays) * 100)
           : 0,
       homeworkPercentage:
-        totalStudents > 0
-          ? Math.round((homeworkBrought / totalStudents) * 100)
+        totalStudentDays > 0
+          ? Math.round((homeworkBrought / totalStudentDays) * 100)
           : 0,
       backpackPercentage:
-        totalStudents > 0
-          ? Math.round((backpackBrought / totalStudents) * 100)
+        totalStudentDays > 0
+          ? Math.round((backpackBrought / totalStudentDays) * 100)
           : 0,
       classes: classesStat,
     };
