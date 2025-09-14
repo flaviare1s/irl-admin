@@ -64,7 +64,7 @@ export const ClassDetails = () => {
       const newHomework = type === "homework" ? value : currentHomework;
       const newBackpack = type === "backpack" ? value : currentBackpack;
 
-      await addDailyAttendance(studentId, selectedDate, newHomework, newBackpack);
+      await addDailyAttendance(studentId, selectedDate, newHomework, newBackpack, classId);
       loadAttendanceData();
     } catch (error) {
       console.error("Error updating attendance:", error);
@@ -187,8 +187,8 @@ export const ClassDetails = () => {
                         !student.attendance?.broughtHomework
                       )}
                       className={`p-2 rounded-full transition-colors ${student.attendance?.broughtHomework
-                          ? "bg-green-100 text-green-600"
-                          : "bg-gray-100 text-gray-400"
+                        ? "bg-green-100 text-green-600"
+                        : "bg-gray-100 text-gray-400"
                         }`}
                     >
                       {student.attendance?.broughtHomework ? (
@@ -207,8 +207,8 @@ export const ClassDetails = () => {
                         !student.attendance?.broughtBackpack
                       )}
                       className={`p-2 rounded-full transition-colors ${student.attendance?.broughtBackpack
-                          ? "bg-green-100 text-green-600"
-                          : "bg-gray-100 text-gray-400"
+                        ? "bg-green-100 text-green-600"
+                        : "bg-gray-100 text-gray-400"
                         }`}
                     >
                       {student.attendance?.broughtBackpack ? (
