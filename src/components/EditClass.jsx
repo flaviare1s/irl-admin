@@ -85,7 +85,7 @@ export const EditClass = ({ classData, onSave, onCancel }) => {
             </button>
             <button
               onClick={handleSave}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-900 transition-colors cursor-pointer"
             >
               Salvar
             </button>
