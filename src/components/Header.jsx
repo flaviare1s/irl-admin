@@ -24,24 +24,24 @@ export const Header = () => {
 
         {user && (
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-4 text-sm sm:text-base">
               <Link
                 to="/dashboard"
-                className="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-600 transition-colors"
+                className="flex items-center gap-1 rounded link-nav"
               >
-                <Home className="w-4 h-4" />
-                Dashboard
+                <Home className="w-5 h-5" />
+                <span className="hidden sm:block">Dashboard</span>
               </Link>
               <Link
                 to="/statistics"
-                className="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-600 transition-colors"
+                className="flex items-center gap-1 rounded link-nav"
               >
-                <BarChart3 className="w-4 h-4" />
-                Estatísticas
+                <BarChart3 className="w-5 h-5" />
+                <span className="hidden sm:block">Estatísticas</span>
               </Link>
             </div>
 
-            <span className="text-white text-xs sm:text-sm">{user.email}</span>
+            <span className="hidden sm:block text-gray-400 text-xs sm:text-sm">{user.email}</span>
             <button
               onClick={handleLogout}
               className="bg-white text-primary hover:text-blue-900 cursor-pointer transition-colors px-2 py-1 rounded font-bold flex items-center gap-1"
@@ -49,12 +49,6 @@ export const Header = () => {
               <LogOut className="w-4 h-4" />
               Sair
             </button>
-          </div>
-        )}
-
-        {!user && (
-          <div className="flex items-center gap-4">
-            <span className="text-white text-xs sm:text-sm">Visitante</span>
           </div>
         )}
       </nav>
