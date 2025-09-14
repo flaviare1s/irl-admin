@@ -9,7 +9,7 @@ export const Student = ({ student, onAttendanceChange, classId }) => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-3">
       <div className="flex items-center justify-between mb-3">
-        <h4 className="text-sm sm:text-base font-medium text-gray-900 flex items-center">
+        <h4 className={`uppercase text-sm sm:text-base font-medium  flex items-center ${student.status === 'inactive' ? 'line-through text-gray-400' : 'text-gray-900'}`}>
           <User className="w-4 h-4 mr-2 text-gray-400" />
           {student.name}
         </h4>
@@ -26,7 +26,7 @@ export const Student = ({ student, onAttendanceChange, classId }) => {
           </div>
         </div>
       </div>
-
+      {student.status === 'active' && 
       <div className="flex items-center justify-between">
         {/* Attendance Toggle */}
         <button
@@ -41,6 +41,7 @@ export const Student = ({ student, onAttendanceChange, classId }) => {
         </button>
 
         {/* Homework and Backpack - only enabled if present */}
+        
         <div className="flex items-center space-x-2">
           <button
             onClick={() => isPresent && onAttendanceChange(student.id, "homework", !broughtHomework)}
@@ -70,7 +71,7 @@ export const Student = ({ student, onAttendanceChange, classId }) => {
             <Backpack className="w-4 h-4" />
           </button>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };
