@@ -105,7 +105,7 @@ export const Statistics = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Estatísticas</h1>
-          <p className="text-gray-600">Acompanhe o desempenho de tarefa e mochila dos alunos</p>
+          <p className="text-gray-600">Acompanhe o desempenho de frequência, tarefa e mochila dos alunos</p>
         </div>
 
         {/* Controles */}
@@ -158,11 +158,21 @@ export const Statistics = () => {
         </div>
 
         {/* Cards de resumo */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
+        <div className="grid md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Média Geral - Tarefa</p>
+                <p className="text-sm font-medium text-gray-600">Frequência Média</p>
+                <p className="text-2xl font-bold text-green-600">{overallStats.attendancePercentage || 0}%</p>
+              </div>
+              <Users className="h-8 w-8 text-green-600" />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Média - Tarefa</p>
                 <p className="text-2xl font-bold text-blue-600">{overallStats.homeworkPercentage}%</p>
               </div>
               <BarChart3 className="h-8 w-8 text-blue-600" />
@@ -172,7 +182,7 @@ export const Statistics = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Média Geral - Mochila</p>
+                <p className="text-sm font-medium text-gray-600">Média - Mochila</p>
                 <p className="text-2xl font-bold text-red-600">{overallStats.backpackPercentage}%</p>
               </div>
               <BarChart3 className="h-8 w-8 text-red-600" />
@@ -182,10 +192,10 @@ export const Statistics = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total de Registros</p>
-                <p className="text-2xl font-bold text-green-600">{overallStats.totalRecords}</p>
+                <p className="text-sm font-medium text-gray-600">Total Registros</p>
+                <p className="text-2xl font-bold text-gray-600">{overallStats.totalRecords}</p>
               </div>
-              <Users className="h-8 w-8 text-green-600" />
+              <TrendingUp className="h-8 w-8 text-gray-600" />
             </div>
           </div>
 
@@ -205,6 +215,7 @@ export const Statistics = () => {
           <PercentagePieChart
             homeworkPercentage={overallStats.homeworkPercentage}
             backpackPercentage={overallStats.backpackPercentage}
+            attendancePercentage={overallStats.attendancePercentage}
             title="Distribuição Geral do Ano"
           />
 
@@ -232,10 +243,14 @@ export const Statistics = () => {
 
               {dailyData.totalStudents > 0 ? (
                 <div>
-                  <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <div className="grid md:grid-cols-4 gap-4 mb-6">
                     <div className="text-center">
                       <p className="text-sm text-gray-600">Alunos registrados</p>
                       <p className="text-2xl font-bold text-gray-900">{dailyData.totalStudents}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600">Frequência</p>
+                      <p className="text-2xl font-bold text-green-600">{dailyData.attendancePercentage}%</p>
                     </div>
                     <div className="text-center">
                       <p className="text-sm text-gray-600">Tarefa trazida</p>

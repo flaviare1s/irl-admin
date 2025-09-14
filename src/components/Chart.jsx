@@ -31,6 +31,7 @@ export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) 
       month: 'short',
       day: 'numeric'
     }),
+    frequencia: item.attendancePercentage,
     tarefa: item.homeworkPercentage,
     mochila: item.backpackPercentage,
     alunos: item.totalStudents
@@ -44,8 +45,22 @@ export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) 
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis domain={[0, 100]} />
-          <Tooltip formatter={(value, name) => [`${value}%`, name === 'tarefa' ? 'Tarefa' : 'Mochila']} />
+          <Tooltip formatter={(value, name) => {
+            const labels = {
+              'frequencia': 'Frequência',
+              'tarefa': 'Tarefa',
+              'mochila': 'Mochila'
+            };
+            return [`${value}%`, labels[name] || name];
+          }} />
           <Legend />
+          <Line
+            type="monotone"
+            dataKey="frequencia"
+            stroke="#10b981"
+            strokeWidth={2}
+            name="Frequência"
+          />
           <Line
             type="monotone"
             dataKey="tarefa"
@@ -78,6 +93,7 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
 
   const chartData = data.map(item => ({
     name: item.className || `Turma ${item.classId}`,
+    frequencia: item.attendancePercentage || 0,
     tarefa: item.homeworkPercentage || 0,
     mochila: item.backpackPercentage || 0,
     alunos: item.students || item.totalStudents || 0
@@ -91,8 +107,16 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis domain={[0, 100]} />
-          <Tooltip formatter={(value, name) => [`${value}%`, name === 'tarefa' ? 'Tarefa' : 'Mochila']} />
+          <Tooltip formatter={(value, name) => {
+            const labels = {
+              'frequencia': 'Frequência',
+              'tarefa': 'Tarefa',
+              'mochila': 'Mochila'
+            };
+            return [`${value}%`, labels[name] || name];
+          }} />
           <Legend />
+          <Bar dataKey="frequencia" fill="#10b981" name="Frequência" />
           <Bar dataKey="tarefa" fill="#3b82f6" name="Tarefa" />
           <Bar dataKey="mochila" fill="#ef4444" name="Mochila" />
         </BarChart>
@@ -101,7 +125,12 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
   );
 };
 
-export const PercentagePieChart = ({ homeworkPercentage, backpackPercentage, title = "Distribuição geral" }) => {
+export const PercentagePieChart = ({ homeworkPercentage, backpackPercentage, attendancePercentage, title = "Distribuição geral" }) => {
+  const dataAttendance = [
+    { name: 'Presente', value: attendancePercentage, color: '#10b981' },
+    { name: 'Ausente', value: 100 - attendancePercentage, color: '#e5e7eb' },
+  ];
+
   const data = [
     { name: 'Tarefa trazida', value: homeworkPercentage, color: '#3b82f6' },
     { name: 'Tarefa não trazida', value: 100 - homeworkPercentage, color: '#e5e7eb' },
@@ -115,7 +144,30 @@ export const PercentagePieChart = ({ homeworkPercentage, backpackPercentage, tit
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border">
       <h3 className="text-lg font-semibold mb-4">{title}</h3>
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
+        <div>
+          <h4 className="text-sm font-medium text-gray-700 mb-2 text-center">Frequência</h4>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={dataAttendance}
+                cx="50%"
+                cy="50%"
+                innerRadius={40}
+                outerRadius={80}
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {dataAttendance.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => `${value}%`} />
+            </PieChart>
+          </ResponsiveContainer>
+          <p className="text-center text-2xl font-bold text-green-600">{attendancePercentage}%</p>
+        </div>
+
         <div>
           <h4 className="text-sm font-medium text-gray-700 mb-2 text-center">Tarefa</h4>
           <ResponsiveContainer width="100%" height={200}>
@@ -178,6 +230,7 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
 
   const chartData = data.dailyStats.map(item => ({
     date: new Date(item.date).getDate(),
+    frequencia: item.attendancePercentage,
     tarefa: item.homeworkPercentage,
     mochila: item.backpackPercentage,
     alunos: item.totalStudents
@@ -188,7 +241,7 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">{title}</h3>
         <div className="text-sm text-gray-600">
-          Média: Tarefa {data.averageHomeworkPercentage}% | Mochila {data.averageBackpackPercentage}%
+          Média: Freq. {data.averageAttendancePercentage}% | Tarefa {data.averageHomeworkPercentage}% | Mochila {data.averageBackpackPercentage}%
         </div>
       </div>
       <ResponsiveContainer width="100%" height={300}>
@@ -196,8 +249,22 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis domain={[0, 100]} />
-          <Tooltip formatter={(value, name) => [`${value}%`, name === 'tarefa' ? 'Tarefa' : 'Mochila']} />
+          <Tooltip formatter={(value, name) => {
+            const labels = {
+              'frequencia': 'Frequência',
+              'tarefa': 'Tarefa',
+              'mochila': 'Mochila'
+            };
+            return [`${value}%`, labels[name] || name];
+          }} />
           <Legend />
+          <Line
+            type="monotone"
+            dataKey="frequencia"
+            stroke="#10b981"
+            strokeWidth={2}
+            name="Frequência"
+          />
           <Line
             type="monotone"
             dataKey="tarefa"

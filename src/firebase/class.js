@@ -220,6 +220,7 @@ export async function getAttendanceByDate(
       attendance:
         student.dailyRecords && student.dailyRecords[date]
           ? {
+              isPresent: student.dailyRecords[date].present || false,
               broughtHomework: student.dailyRecords[date].homework || false,
               broughtBackpack: student.dailyRecords[date].backpack || false,
             }
@@ -235,6 +236,7 @@ export async function getAttendanceByDate(
 export async function addDailyAttendance(
   studentId,
   date,
+  isPresent,
   broughtHomework,
   broughtBackpack,
   classId
@@ -263,6 +265,7 @@ export async function addDailyAttendance(
           dailyRecords: {
             ...dailyRecords,
             [date]: {
+              present: Boolean(isPresent),
               homework: Boolean(broughtHomework),
               backpack: Boolean(broughtBackpack),
               timestamp: Timestamp.now(),
@@ -283,7 +286,7 @@ export async function addDailyAttendance(
       { merge: true }
     );
 
-    return { studentId, date, broughtHomework, broughtBackpack };
+    return { studentId, date, isPresent, broughtHomework, broughtBackpack };
   } catch (error) {
     console.error("Error adding attendance:", error);
     throw error;
@@ -349,7 +352,7 @@ export async function toggleStudentDailyField(
   }
 }
 
-// Estatísticas de tarefa e mochila
+// Estatísticas de tarefa, mochila e frequência
 export const getHomeworkBackpackStats = async (
   year = new Date().getFullYear()
 ) => {
@@ -358,6 +361,7 @@ export const getHomeworkBackpackStats = async (
     const snapshot = await getDocs(q);
 
     let totalRecords = 0;
+    let presentCount = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
 
@@ -371,6 +375,7 @@ export const getHomeworkBackpackStats = async (
 
           for (let record of records) {
             totalRecords++;
+            if (record.present) presentCount++;
             if (record.homework) homeworkBrought++;
             if (record.backpack) backpackBrought++;
           }
@@ -379,6 +384,10 @@ export const getHomeworkBackpackStats = async (
     }
 
     return {
+      attendancePercentage:
+        totalRecords > 0
+          ? Math.round((presentCount / totalRecords) * 100)
+          : 0,
       homeworkPercentage:
         totalRecords > 0
           ? Math.round((homeworkBrought / totalRecords) * 100)
@@ -388,10 +397,21 @@ export const getHomeworkBackpackStats = async (
           ? Math.round((backpackBrought / totalRecords) * 100)
           : 0,
       totalRecords,
+      presentCount,
+      homeworkBrought,
+      backpackBrought,
     };
   } catch (error) {
     console.error("Error getting homework/backpack stats:", error);
-    return { homeworkPercentage: 0, backpackPercentage: 0, totalRecords: 0 };
+    return { 
+      attendancePercentage: 0, 
+      homeworkPercentage: 0, 
+      backpackPercentage: 0, 
+      totalRecords: 0,
+      presentCount: 0,
+      homeworkBrought: 0,
+      backpackBrought: 0
+    };
   }
 };
 
@@ -432,6 +452,7 @@ export const getClassStats = async (classId) => {
     );
 
     let totalRecords = 0;
+    let presentCount = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
 
@@ -441,6 +462,7 @@ export const getClassStats = async (classId) => {
 
         for (let record of records) {
           totalRecords++;
+          if (record.present) presentCount++;
           if (record.homework) homeworkBrought++;
           if (record.backpack) backpackBrought++;
         }
@@ -450,6 +472,10 @@ export const getClassStats = async (classId) => {
     return {
       classId,
       totalRecords,
+      attendancePercentage:
+        totalRecords > 0
+          ? Math.round((presentCount / totalRecords) * 100)
+          : 0,
       homeworkPercentage:
         totalRecords > 0
           ? Math.round((homeworkBrought / totalRecords) * 100)
@@ -458,6 +484,7 @@ export const getClassStats = async (classId) => {
         totalRecords > 0
           ? Math.round((backpackBrought / totalRecords) * 100)
           : 0,
+      presentCount,
       homeworkBrought,
       backpackBrought,
       totalStudents: activeStudents.length,
