@@ -44,7 +44,7 @@ export const Header = () => {
             <span className="hidden sm:block text-gray-400 text-xs sm:text-sm">{user.email}</span>
             <button
               onClick={handleLogout}
-              className="bg-white text-primary hover:text-blue-900 cursor-pointer transition-colors px-2 py-1 rounded font-bold flex items-center gap-1"
+              className="text-white cursor-pointer transition-colors px-2 py-1 rounded font-bold flex items-center gap-1 link-nav"
             >
               <LogOut className="w-4 h-4" />
               Sair
