@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import {
   Calendar,
@@ -27,17 +27,7 @@ export const ClassDetails = () => {
   const [newStudentName, setNewStudentName] = useState("");
   const [showEditClass, setShowEditClass] = useState(false);
 
-  useEffect(() => {
-    loadClassData();
-  }, [classId]);
-
-  useEffect(() => {
-    if (classData) {
-      loadAttendanceData();
-    }
-  }, [selectedDate, classData]);
-
-  const loadClassData = async () => {
+  const loadClassData = useCallback(async () => {
     try {
       if (!classId) {
         console.error("No classId provided");
@@ -48,9 +38,9 @@ export const ClassDetails = () => {
     } catch (error) {
       console.error("Error loading class:", error);
     }
-  };
+  }, [classId]);
 
-  const loadAttendanceData = async () => {
+  const loadAttendanceData = useCallback(async () => {
     try {
       const data = await getAttendanceByDate(classId, selectedDate);
       setStudents(data);
@@ -59,7 +49,17 @@ export const ClassDetails = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [classId, selectedDate]);
+
+  useEffect(() => {
+    loadClassData();
+  }, [loadClassData]);
+
+  useEffect(() => {
+    if (classData) {
+      loadAttendanceData();
+    }
+  }, [loadAttendanceData, classData]);
 
   const handleAttendanceChange = async (studentId, type, value) => {
     try {
@@ -198,6 +198,7 @@ export const ClassDetails = () => {
                 key={student.id}
                 student={student}
                 onAttendanceChange={handleAttendanceChange}
+                classId={classId}
               />
             ))}
           </div>

@@ -1,7 +1,7 @@
 import { User, BookOpen, Backpack, UserCheck, UserX, Eye, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export const Student = ({ student, onAttendanceChange }) => {
+export const Student = ({ student, onAttendanceChange, classId }) => {
   const isPresent = student.attendance?.isPresent;
   const broughtHomework = student.attendance?.broughtHomework;
   const broughtBackpack = student.attendance?.broughtBackpack;
@@ -20,7 +20,7 @@ export const Student = ({ student, onAttendanceChange }) => {
             </Link>
           </div>
           <div>
-            <Link to={`student/${student.id}`} className="text-greenery hover:text-green-800">
+            <Link to={`/class/${classId}/edit-student/${student.id}`} className="text-greenery hover:text-green-800">
               <Settings className="w-4 h-4" />
             </Link>
           </div>
@@ -32,8 +32,8 @@ export const Student = ({ student, onAttendanceChange }) => {
         <button
           onClick={() => onAttendanceChange(student.id, "present", !isPresent)}
           className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${isPresent
-              ? 'bg-green-100 text-green-700 hover:bg-green-200'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            ? 'bg-green-100 text-green-700 hover:bg-green-200'
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
           {isPresent ? <UserCheck className="w-3 h-3" /> : <UserX className="w-3 h-3" />}
@@ -46,10 +46,10 @@ export const Student = ({ student, onAttendanceChange }) => {
             onClick={() => isPresent && onAttendanceChange(student.id, "homework", !broughtHomework)}
             disabled={!isPresent}
             className={`p-1.5 rounded-full transition-colors ${!isPresent
-                ? 'opacity-40 cursor-not-allowed bg-gray-100'
-                : broughtHomework
-                  ? 'bg-blue-100 text-primary hover:bg-blue-200'
-                  : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+              ? 'opacity-40 cursor-not-allowed bg-gray-100'
+              : broughtHomework
+                ? 'bg-blue-100 text-primary hover:bg-blue-200'
+                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
               }`}
             title={!isPresent ? 'Disponível apenas para alunos presentes' : broughtHomework ? 'Trouxe tarefa' : 'Não trouxe tarefa'}
           >
@@ -60,10 +60,10 @@ export const Student = ({ student, onAttendanceChange }) => {
             onClick={() => isPresent && onAttendanceChange(student.id, "backpack", !broughtBackpack)}
             disabled={!isPresent}
             className={`p-1.5 rounded-full transition-colors ${!isPresent
-                ? 'opacity-40 cursor-not-allowed bg-gray-100'
-                : broughtBackpack
-                  ? 'bg-purple-100 text-radiant-orchid hover:bg-purple-200'
-                  : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+              ? 'opacity-40 cursor-not-allowed bg-gray-100'
+              : broughtBackpack
+                ? 'bg-purple-100 text-radiant-orchid hover:bg-purple-200'
+                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
               }`}
             title={!isPresent ? 'Disponível apenas para alunos presentes' : broughtBackpack ? 'Trouxe mochila' : 'Não trouxe mochila'}
           >

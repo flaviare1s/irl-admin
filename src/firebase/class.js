@@ -169,6 +169,111 @@ export async function addStudent(turmaId, studentData) {
   }
 }
 
+// Atualizar aluno
+export async function updateStudent(turmaId, studentId, studentData) {
+  try {
+    if (!turmaId || !studentId) {
+      throw new Error("ID da turma e ID do aluno são obrigatórios");
+    }
+
+    // Obter turma atual
+    const turmaRef = doc(db, "turmas", turmaId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const currentStudents = turmaData.students || [];
+
+    // Encontrar índice do aluno
+    const studentIndex = currentStudents.findIndex(
+      (student) => student.id === studentId
+    );
+
+    if (studentIndex === -1) {
+      throw new Error("Aluno não encontrado");
+    }
+
+    // Atualizar dados do aluno
+    const updatedStudent = {
+      ...currentStudents[studentIndex],
+      ...studentData,
+    };
+
+    // Atualizar array de alunos
+    const updatedStudents = [...currentStudents];
+    updatedStudents[studentIndex] = updatedStudent;
+
+    // Ordenar alfabeticamente se o nome foi alterado
+    if (studentData.name) {
+      updatedStudents.sort((a, b) =>
+        a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
+      );
+    }
+
+    // Atualizar documento da turma
+    await setDoc(
+      turmaRef,
+      {
+        ...turmaData,
+        students: updatedStudents,
+      },
+      { merge: true }
+    );
+
+    return updatedStudent;
+  } catch (error) {
+    console.error("Error updating student:", error);
+    throw error;
+  }
+}
+
+// Excluir aluno
+export async function deleteStudent(turmaId, studentId) {
+  try {
+    if (!turmaId || !studentId) {
+      throw new Error("ID da turma e ID do aluno são obrigatórios");
+    }
+
+    // Obter turma atual
+    const turmaRef = doc(db, "turmas", turmaId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const currentStudents = turmaData.students || [];
+
+    // Filtrar aluno a ser removido
+    const updatedStudents = currentStudents.filter(
+      (student) => student.id !== studentId
+    );
+
+    if (updatedStudents.length === currentStudents.length) {
+      throw new Error("Aluno não encontrado");
+    }
+
+    // Atualizar documento da turma
+    await setDoc(
+      turmaRef,
+      {
+        ...turmaData,
+        students: updatedStudents,
+      },
+      { merge: true }
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting student:", error);
+    throw error;
+  }
+}
+
 // Remover aluno
 export async function removeStudent(turmaId, studentId) {
   try {
