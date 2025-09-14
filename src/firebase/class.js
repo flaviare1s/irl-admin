@@ -522,45 +522,46 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       let classPresent = 0;
       let classHomework = 0;
       let classBackpack = 0;
-      let classStudentDays = 0;
+      const classStudentDays = activeStudents.length; // Total de alunos ativos
 
       for (let student of activeStudents) {
         if (student.dailyRecords && student.dailyRecords[date]) {
           const record = student.dailyRecords[date];
-          classStudentDays++;
-          totalStudentDays++;
 
           if (record.present === true) {
             classPresent++;
-            presentStudents++;
           }
           if (record.homework === true) {
             classHomework++;
-            homeworkBrought++;
           }
           if (record.backpack === true) {
             classBackpack++;
-            backpackBrought++;
           }
         }
+        // Se não tem registro, conta como ausente (0 para tudo)
       }
 
-      if (classStudentDays > 0) {
-        classesStat.push({
-          classId: turma.id,
-          className: turmaData.name,
-          students: classStudentDays,
-          attendancePercentage: Math.round(
-            (classPresent / classStudentDays) * 100
-          ),
-          homeworkPercentage: Math.round(
-            (classHomework / classStudentDays) * 100
-          ),
-          backpackPercentage: Math.round(
-            (classBackpack / classStudentDays) * 100
-          ),
-        });
-      }
+      // Adicionar aos totais gerais
+      totalStudentDays += classStudentDays;
+      presentStudents += classPresent;
+      homeworkBrought += classHomework;
+      backpackBrought += classBackpack;
+
+      // Sempre adicionar estatísticas da turma (mesmo com 0 registros)
+      classesStat.push({
+        classId: turma.id,
+        className: turmaData.name,
+        students: classStudentDays,
+        attendancePercentage: Math.round(
+          (classPresent / classStudentDays) * 100
+        ),
+        homeworkPercentage: Math.round(
+          (classHomework / classStudentDays) * 100
+        ),
+        backpackPercentage: Math.round(
+          (classBackpack / classStudentDays) * 100
+        ),
+      });
     }
 
     return {
