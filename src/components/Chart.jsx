@@ -14,7 +14,7 @@ import {
   Cell
 } from 'recharts';
 
-const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b'];
+const COLORS = ['#2E4DA7', '#FA7268', '#88B04B', '#F6C324'];
 
 export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) => {
   if (!data || data.length === 0) {
@@ -57,21 +57,21 @@ export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) 
           <Line
             type="monotone"
             dataKey="frequencia"
-            stroke="#10b981"
+            stroke="#88B04B"
             strokeWidth={2}
             name="Frequência"
           />
           <Line
             type="monotone"
             dataKey="tarefa"
-            stroke="#3b82f6"
+            stroke="#2E4DA7"
             strokeWidth={2}
             name="Tarefa"
           />
           <Line
             type="monotone"
             dataKey="mochila"
-            stroke="#ef4444"
+            stroke="#FA7268"
             strokeWidth={2}
             name="Mochila"
           />
@@ -116,9 +116,9 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
             return [`${value}%`, labels[name] || name];
           }} />
           <Legend />
-          <Bar dataKey="frequencia" fill="#10b981" name="Frequência" />
-          <Bar dataKey="tarefa" fill="#3b82f6" name="Tarefa" />
-          <Bar dataKey="mochila" fill="#ef4444" name="Mochila" />
+          <Bar dataKey="frequencia" fill="#88B04B" name="Frequência" />
+          <Bar dataKey="tarefa" fill="#2E4DA7" name="Tarefa" />
+          <Bar dataKey="mochila" fill="#FA7268" name="Mochila" />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -127,17 +127,17 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
 
 export const PercentagePieChart = ({ homeworkPercentage, backpackPercentage, attendancePercentage, title = "Distribuição geral" }) => {
   const dataAttendance = [
-    { name: 'Presente', value: attendancePercentage, color: '#10b981' },
+    { name: 'Presente', value: attendancePercentage, color: '#88B04B' },
     { name: 'Ausente', value: 100 - attendancePercentage, color: '#e5e7eb' },
   ];
 
   const data = [
-    { name: 'Tarefa trazida', value: homeworkPercentage, color: '#3b82f6' },
+    { name: 'Tarefa trazida', value: homeworkPercentage, color: '#2E4DA7' },
     { name: 'Tarefa não trazida', value: 100 - homeworkPercentage, color: '#e5e7eb' },
   ];
 
   const data2 = [
-    { name: 'Mochila trazida', value: backpackPercentage, color: '#ef4444' },
+    { name: 'Mochila trazida', value: backpackPercentage, color: '#FA7268' },
     { name: 'Mochila não trazida', value: 100 - backpackPercentage, color: '#e5e7eb' },
   ];
 
@@ -261,21 +261,21 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
           <Line
             type="monotone"
             dataKey="frequencia"
-            stroke="#10b981"
+            stroke="#88B04B"
             strokeWidth={2}
             name="Frequência"
           />
           <Line
             type="monotone"
             dataKey="tarefa"
-            stroke="#3b82f6"
+            stroke="#2E4DA7"
             strokeWidth={2}
             name="Tarefa"
           />
           <Line
             type="monotone"
             dataKey="mochila"
-            stroke="#ef4444"
+            stroke="#FA7268"
             strokeWidth={2}
             name="Mochila"
           />
