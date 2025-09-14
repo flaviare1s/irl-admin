@@ -5,12 +5,14 @@ import {
   addDoc,
   setDoc,
   getDocs,
+  getDoc,
   query,
   where,
-  updateDoc,
-  getDoc,
+  deleteDoc,
+  Timestamp,
 } from "firebase/firestore";
 
+// --- Turmas ---
 // Criar turma
 export async function createClass(name, year) {
   const turmaRef = await addDoc(collection(db, "turmas"), {
@@ -21,47 +23,31 @@ export async function createClass(name, year) {
   return turmaRef.id;
 }
 
-// Adicionar aluno a uma turma
-export async function addStudent(turmaId, nome) {
-  const alunosRef = collection(db, "turmas", turmaId, "alunos");
-  const alunoRef = await addDoc(alunosRef, { nome });
-  return alunoRef.id;
-}
-
-// Obter alunos de uma turma
-export const getStudentsByClass = async (classId) => {
-  const snapshot = await getDocs(
-    collection(db, "classes", classId, "students")
-  );
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+// Adicionar turma (versão compatível com AddClass component)
+export const addClass = async (classData) => {
+  try {
+    const docRef = await addDoc(collection(db, "turmas"), {
+      name: classData.name,
+      year: classData.year,
+      active: true,
+      description: classData.description || "",
+      maxStudents: classData.maxStudents || 30,
+      teacher: classData.teacher || "",
+      createdAt: Timestamp.now(),
+    });
+    return { id: docRef.id, ...classData };
+  } catch (error) {
+    console.error("Error adding class:", error);
+    throw error;
+  }
 };
 
-// Alternar campo (tarefa/mochila) de um aluno
-export const toggleStudentField = async (classId, studentId, field) => {
-  const studentRef = doc(db, "classes", classId, "students", studentId);
-  const studentSnap = await getDocs(studentRef);
-  await updateDoc(studentRef, { [field]: !studentSnap.data()[field] });
-};
-
-// Registrar presença de tarefa/mochila para um aluno num dia
-export async function registerDaily(turmaId, alunoId, date, tarefa, mochila) {
-  const registroRef = doc(
-    db,
-    "turmas",
-    turmaId,
-    "alunos",
-    alunoId,
-    "registros",
-    date
-  );
-  await setDoc(registroRef, {
-    tarefa,
-    mochila,
-    createdAt: new Date(),
-  });
+// Deletar turma
+export async function deleteClass(turmaId) {
+  await deleteDoc(doc(db, "turmas", turmaId));
 }
 
-// Estatísticas gerais por ano
+// Obter turmas por ano
 export async function getClassStatistics(year) {
   const q = query(collection(db, "turmas"), where("year", "==", year));
   const snapshot = await getDocs(q);
@@ -76,8 +62,9 @@ export async function getClassStatistics(year) {
     const turmaData = turma.data();
     if (turmaData.active) activeClasses++;
 
-    const alunosRef = collection(db, "turmas", turma.id, "alunos");
-    const alunosSnap = await getDocs(alunosRef);
+    const alunosSnap = await getDocs(
+      collection(db, "turmas", turma.id, "alunos")
+    );
     totalStudents += alunosSnap.size;
 
     classes.push({
@@ -90,71 +77,178 @@ export async function getClassStatistics(year) {
   return { totalClasses, activeClasses, totalStudents, classes };
 }
 
-// Estatísticas de tarefa/mochila por ano (agregadas)
-export async function getHomeworkBackpackStats(year) {
-  const q = query(collection(db, "turmas"), where("year", "==", year));
-  const snapshot = await getDocs(q);
+// Obter turma por ID
+export const getClassById = async (classId) => {
+  try {
+    const docRef = doc(db, "turmas", classId);
+    const docSnap = await getDoc(docRef);
 
-  let totalRegistros = 0;
-  let tarefaCount = 0;
-  let mochilaCount = 0;
-
-  for (let turma of snapshot.docs) {
-    const alunosRef = collection(db, "turmas", turma.id, "alunos");
-    const alunosSnap = await getDocs(alunosRef);
-
-    for (let aluno of alunosSnap.docs) {
-      const registrosRef = collection(
-        db,
-        "turmas",
-        turma.id,
-        "alunos",
-        aluno.id,
-        "registros"
-      );
-      const registrosSnap = await getDocs(registrosRef);
-
-      registrosSnap.forEach((r) => {
-        totalRegistros++;
-        if (r.data().tarefa) tarefaCount++;
-        if (r.data().mochila) mochilaCount++;
-      });
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      throw new Error("Turma não encontrada");
     }
+  } catch (error) {
+    console.error("Error getting class:", error);
+    throw error;
   }
+};
 
-  return {
-    homeworkPercentage: totalRegistros
-      ? Math.round((tarefaCount / totalRegistros) * 100)
-      : 0,
-    backpackPercentage: totalRegistros
-      ? Math.round((mochilaCount / totalRegistros) * 100)
-      : 0,
-  };
+// --- Alunos ---
+// Adicionar aluno
+export async function addStudent(turmaId, studentData) {
+  try {
+    const nome =
+      typeof studentData === "string" ? studentData : studentData.name;
+    const alunoRef = await addDoc(collection(db, "turmas", turmaId, "alunos"), {
+      nome,
+    });
+    return { id: alunoRef.id, name: nome };
+  } catch (error) {
+    console.error("Error adding student:", error);
+    throw error;
+  }
 }
 
-// Obter alunos com registro do dia (ex: '2025-09-14')
-export async function getDailyStudents(turmaId, date = new Date().toISOString().slice(0,10)) {
-  const alunosRef = collection(db, "turmas", turmaId, "alunos");
-  const alunosSnap = await getDocs(alunosRef);
+// Remover aluno
+export async function removeStudent(turmaId, alunoId) {
+  await deleteDoc(doc(db, "turmas", turmaId, "alunos", alunoId));
+}
+
+// --- Registros diários ---
+// Obter alunos com registro do dia
+export async function getAttendanceByDate(
+  turmaId,
+  date = new Date().toISOString().slice(0, 10)
+) {
+  const alunosSnap = await getDocs(collection(db, "turmas", turmaId, "alunos"));
   const students = [];
 
   for (let aluno of alunosSnap.docs) {
-    const registroRef = doc(db, "turmas", turmaId, "alunos", aluno.id, "registros", date);
+    const registroRef = doc(
+      db,
+      "turmas",
+      turmaId,
+      "alunos",
+      aluno.id,
+      "registros",
+      date
+    );
     const registroSnap = await getDoc(registroRef);
     students.push({
       id: aluno.id,
       name: aluno.data().nome,
-      trouxeTarefa: registroSnap.exists() ? registroSnap.data().tarefa : false,
-      trouxeMochila: registroSnap.exists() ? registroSnap.data().mochila : false
+      attendance: registroSnap.exists()
+        ? {
+            broughtHomework: registroSnap.data().tarefa || false,
+            broughtBackpack: registroSnap.data().mochila || false,
+          }
+        : null,
     });
   }
   return students;
 }
 
-// Alternar campo do registro do dia
-export async function toggleStudentDailyField(turmaId, alunoId, field, date = new Date().toISOString().slice(0,10)) {
-  const registroRef = doc(db, "turmas", turmaId, "alunos", alunoId, "registros", date);
+// Adicionar/atualizar registro diário
+export async function addDailyAttendance(
+  studentId,
+  date,
+  broughtHomework,
+  broughtBackpack,
+  classId
+) {
+  try {
+    const registroRef = doc(
+      db,
+      "turmas",
+      classId,
+      "alunos",
+      studentId,
+      "registros",
+      date
+    );
+    await setDoc(
+      registroRef,
+      {
+        tarefa: Boolean(broughtHomework),
+        mochila: Boolean(broughtBackpack),
+      },
+      { merge: true }
+    );
+    return { studentId, date, broughtHomework, broughtBackpack };
+  } catch (error) {
+    console.error("Error adding attendance:", error);
+    throw error;
+  }
+}
+
+// Alternar campo do registro do dia (tarefa ou mochila)
+export async function toggleStudentDailyField(
+  turmaId,
+  alunoId,
+  field,
+  date = new Date().toISOString().slice(0, 10)
+) {
+  const registroRef = doc(
+    db,
+    "turmas",
+    turmaId,
+    "alunos",
+    alunoId,
+    "registros",
+    date
+  );
   const registroSnap = await getDoc(registroRef);
-  const currentValue = registroSnap.exists() ? registroSnap.data()[field] : false;
+  const currentValue = registroSnap.exists()
+    ? registroSnap.data()[field]
+    : false;
   await setDoc(registroRef, { [field]: !currentValue }, { merge: true });
 }
+
+// Estatísticas de tarefa e mochila
+export const getHomeworkBackpackStats = async (
+  year = new Date().getFullYear()
+) => {
+  try {
+    const q = query(collection(db, "turmas"), where("year", "==", year));
+    const snapshot = await getDocs(q);
+
+    let totalRecords = 0;
+    let homeworkBrought = 0;
+    let backpackBrought = 0;
+
+    for (let turma of snapshot.docs) {
+      const alunosSnap = await getDocs(
+        collection(db, "turmas", turma.id, "alunos")
+      );
+
+      for (let aluno of alunosSnap.docs) {
+        const registrosSnap = await getDocs(
+          collection(db, "turmas", turma.id, "alunos", aluno.id, "registros")
+        );
+
+        for (let registro of registrosSnap.docs) {
+          const data = registro.data();
+          totalRecords++;
+          if (data.tarefa) homeworkBrought++;
+          if (data.mochila) backpackBrought++;
+        }
+      }
+    }
+
+    return {
+      homeworkPercentage:
+        totalRecords > 0
+          ? Math.round((homeworkBrought / totalRecords) * 100)
+          : 0,
+      backpackPercentage:
+        totalRecords > 0
+          ? Math.round((backpackBrought / totalRecords) * 100)
+          : 0,
+      totalRecords,
+    };
+  } catch (error) {
+    console.error("Error getting homework/backpack stats:", error);
+    return { homeworkPercentage: 0, backpackPercentage: 0, totalRecords: 0 };
+  }
+};

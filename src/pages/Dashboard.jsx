@@ -71,6 +71,10 @@ export const Dashboard = () => {
     setCurrentYear(year);
   };
 
+  const handleClassAdded = () => {
+    loadDashboardData(); // Reload data after creating a class
+  };
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
@@ -102,6 +106,7 @@ export const Dashboard = () => {
           <AddClass
             icon={<GraduationCap className="w-6 h-6" />}
             label="Cadastrar Turma"
+            onClassAdded={handleClassAdded}
           />
           {classData.length > 0 && (
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">

@@ -13,7 +13,7 @@ import { ScrollToTop } from './components/ScrollToTop'
 import { RedirectHome } from './components/RedirectHome'
 import { Login } from './pages/Login'
 import { CreateClass } from './pages/CreateClass'
-import { ClassDetail } from './pages/ClassDetails'
+import { ClassDetails } from './pages/ClassDetails'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
 function App() {
@@ -42,7 +42,7 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path='/create-class' element={<ProtectedRoute><CreateClass /></ProtectedRoute>} />
-            <Route path='/class/:id' element={<ProtectedRoute><ClassDetail /></ProtectedRoute>} />
+            <Route path='/class/:id' element={<ProtectedRoute><ClassDetails /></ProtectedRoute>} />
             <Route path='/reset-password' element={<ResetPassword />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
