@@ -135,7 +135,7 @@ export const ClassDetails = () => {
             <h3 className="text-lg font-semibold text-gray-900">Alunos ({students.length})</h3>
             <button
               onClick={() => setShowAddStudent(!showAddStudent)}
-              className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors w-full sm:w-auto"
+              className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors w-full sm:w-auto cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               <span>Adicionar Aluno</span>
@@ -154,7 +154,7 @@ export const ClassDetails = () => {
               />
               <button
                 onClick={handleAddStudent}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors w-full sm:w-auto"
+                className="px-4 py-2 bg-greenery text-white rounded-lg hover:bg-green-700 transition-colors w-full sm:w-auto cursor-pointer"
               >
                 Adicionar
               </button>
@@ -175,8 +175,8 @@ export const ClassDetails = () => {
                       {student.name}
                     </h4>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${student.attendance?.isPresent
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-600'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-600'
                       }`}>
                       {student.attendance?.isPresent ? 'Presente' : 'Ausente'}
                     </span>
@@ -196,9 +196,9 @@ export const ClassDetails = () => {
                           "present",
                           !student.attendance?.isPresent
                         )}
-                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${student.attendance?.isPresent
-                            ? "bg-green-100 text-green-700 border-2 border-green-300"
-                            : "bg-gray-100 text-gray-500 border-2 border-gray-300"
+                        className={`flex items-center cursor-pointer justify-center space-x-2 p-3 rounded-lg transition-colors ${student.attendance?.isPresent
+                          ? "bg-green-100 text-green-700 border-2 border-green-300"
+                          : "bg-gray-100 text-gray-500 border-2 border-gray-300"
                           }`}
                       >
                         {student.attendance?.isPresent ? (
@@ -224,9 +224,9 @@ export const ClassDetails = () => {
                           "homework",
                           !student.attendance?.broughtHomework
                         )}
-                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${student.attendance?.broughtHomework
-                            ? "bg-blue-100 text-blue-700 border-2 border-blue-300"
-                            : "bg-gray-100 text-gray-500 border-2 border-gray-300"
+                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg cursor-pointer transition-colors ${student.attendance?.broughtHomework
+                          ? "bg-blue-100 text-blue-700 border-2 border-blue-300"
+                          : "bg-gray-100 text-gray-500 border-2 border-gray-300"
                           }`}
                       >
                         {student.attendance?.broughtHomework ? (
@@ -252,9 +252,9 @@ export const ClassDetails = () => {
                           "backpack",
                           !student.attendance?.broughtBackpack
                         )}
-                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${student.attendance?.broughtBackpack
-                            ? "bg-purple-100 text-purple-700 border-2 border-purple-300"
-                            : "bg-gray-100 text-gray-500 border-2 border-gray-300"
+                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg cursor-pointer transition-colors ${student.attendance?.broughtBackpack
+                          ? "bg-purple-100 text-radiant-orchid border-2 border-purple-300"
+                          : "bg-gray-100 text-gray-500 border-2 border-gray-300"
                           }`}
                       >
                         {student.attendance?.broughtBackpack ? (

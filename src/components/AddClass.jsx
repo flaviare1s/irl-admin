@@ -63,7 +63,7 @@ export const AddClass = ({ icon, label, onClassAdded }) => {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -134,14 +134,14 @@ export const AddClass = ({ icon, label, onClassAdded }) => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-primary text-white hover:bg-primary-dark rounded-lg transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-primary text-white hover:bg-primary-dark rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {loading ? 'Criando...' : 'Criar Turma'}
                 </button>
