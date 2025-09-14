@@ -18,7 +18,7 @@ import {
 } from "../firebase/class";
 
 export const ClassDetails = () => {
-  const { classId } = useParams();
+  const { id: classId } = useParams();
   const [classData, setClassData] = useState(null);
   const [students, setStudents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
@@ -38,6 +38,10 @@ export const ClassDetails = () => {
 
   const loadClassData = async () => {
     try {
+      if (!classId) {
+        console.error("No classId provided");
+        return;
+      }
       const data = await getClassById(classId);
       setClassData(data);
     } catch (error) {
