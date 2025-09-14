@@ -135,8 +135,8 @@ export const EditStudent = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md sm:min-w-[430px] w-full">
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 w-full">
+      <div className="bg-white rounded-lg shadow-xl sm:max-w-[430px] w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center space-x-3">
