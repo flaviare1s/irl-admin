@@ -46,7 +46,7 @@ function App() {
             <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path='/create-class' element={<ProtectedRoute><CreateClass /></ProtectedRoute>} />
             <Route path='/class/:id' element={<ProtectedRoute><ClassDetails /></ProtectedRoute>} />
-            <Route path='/student/:id' element={<ProtectedRoute><StudentDetails /></ProtectedRoute>} />
+            <Route path='/class/:classId/student/:studentId' element={<ProtectedRoute><StudentDetails /></ProtectedRoute>} />
             <Route path='/class/:classId/edit-student/:studentId' element={<ProtectedRoute><EditStudent /></ProtectedRoute>} />
             <Route path='/statistics' element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
             <Route path='/reset-password' element={<ResetPassword />} />

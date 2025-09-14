@@ -15,7 +15,7 @@ export const Student = ({ student, onAttendanceChange, classId }) => {
         </h4>
         <div className="flex items-center gap-[6px] ml-2">
           <div>
-            <Link to={`/edit-student/${student.id}`} className="text-living-coral hover:text-orange-700">
+            <Link to={`/class/${classId}/student/${student.id}`} className="text-living-coral hover:text-orange-700">
               <Eye className="w-4 h-4" />
             </Link>
           </div>
