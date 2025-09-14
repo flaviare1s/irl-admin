@@ -13,7 +13,17 @@ export const Login = () => {
       toast.success('Bem-vindo(a) ao IRL!')
       navigate('/dashboard')
     }).catch((error) => {
-      toast.error(`Um erro aconteceu: ${error.code}`)
+      let message = "Um erro aconteceu. Tente novamente."
+
+      if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+        message = "Usuário ou senha inválidos."
+      } else if (error.code === "auth/user-not-found") {
+        message = "Usuário não encontrado."
+      } else if (error.code === "auth/too-many-requests") {
+        message = "Muitas tentativas. Tente mais tarde."
+      }
+
+      toast.error(message)
     })
   }
 
