@@ -48,7 +48,7 @@ export const ResetPassword = () => {
         <div className="text-center">
           <small className="text-gray-600">
             <Link to="/login" className="text-gray-800 underline hover:text-gray-600">
-              voltar ao login
+              Voltar ao login
             </Link>
           </small>
         </div>
