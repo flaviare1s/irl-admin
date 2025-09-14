@@ -8,7 +8,7 @@ export const Student = ({ student, onAttendanceChange, classId }) => {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-3">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-3">
         <h4 className="text-sm sm:text-base font-medium text-gray-900 flex items-center">
           <User className="w-4 h-4 mr-2 text-gray-400" />
           {student.name}
