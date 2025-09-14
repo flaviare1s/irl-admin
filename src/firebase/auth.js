@@ -25,7 +25,7 @@ export async function logout() {
 }
 
 // Resetar a senha
-export async function resetarSenha(email) {
+export async function resetPassord(email) {
   sendPasswordResetEmail(auth, email)
     .then(() => {
       toast.success("E-mail de redefinição de senha enviado!");

@@ -11,6 +11,7 @@ import { auth } from './firebase/config'
 import { Dashboard } from './pages/Dashboard'
 import { ScrollToTop } from './components/ScrollToTop'
 import { RedirectHome } from './components/RedirectHome'
+import { Login } from './pages/Login'
 
 function App() {
   const [userLogged, setUserLogged] = useState(null)
@@ -35,6 +36,7 @@ function App() {
       <main className='flex flex-col justify-center items-center m-auto min-h-[calc(100vh-80px)] p-4'>
         <Routes>
           <Route path='/' element={<RedirectHome />} />
+          <Route path='/login' element={<Login />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/reset-password' element={<ResetPassword />} />
           <Route path='*' element={<NotFound />} />
