@@ -105,7 +105,7 @@ export const Dashboard = () => {
           />
           {classData.length > 0 && (
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Turmas Cadastradas</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Selecione a turma</h3>
               <ul className="space-y-2">
                 {classData.map(cls => (
                   <li
