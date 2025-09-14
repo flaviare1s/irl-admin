@@ -64,9 +64,9 @@ export const StudentDetails = () => {
     const chartData = [];
 
     records.forEach(([date, record]) => {
-      const isPresent = record.isPresent === true;
-      const broughtHomework = record.broughtHomework === true;
-      const broughtBackpack = record.broughtBackpack === true;
+      const isPresent = record.present === true;
+      const broughtHomework = record.homework === true;
+      const broughtBackpack = record.backpack === true;
 
       if (isPresent) {
         presentDays++;
@@ -245,9 +245,9 @@ export const StudentDetails = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Mochila</p>
-                  <p className="text-2xl font-bold text-living-coral">{studentStats.backpackPercentage}%</p>
+                  <p className="text-2xl font-bold text-freesia">{studentStats.backpackPercentage}%</p>
                 </div>
-                <Backpack className="w-8 h-8 text-living-coral" />
+                <Backpack className="w-8 h-8 text-freesia" />
               </div>
             </div>
           </div>
@@ -276,7 +276,7 @@ export const StudentDetails = () => {
               </ResponsiveContainer>
               <div className="flex justify-center space-x-4 mt-2">
                 <div className="flex items-center space-x-1">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-greenery rounded-full"></div>
                   <span className="text-xs text-gray-600">Presente</span>
                 </div>
                 <div className="flex items-center space-x-1">
@@ -308,7 +308,7 @@ export const StudentDetails = () => {
               </ResponsiveContainer>
               <div className="flex justify-center space-x-4 mt-2">
                 <div className="flex items-center space-x-1">
-                  <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
                   <span className="text-xs text-gray-600">Trouxe</span>
                 </div>
                 <div className="flex items-center space-x-1">
@@ -340,7 +340,7 @@ export const StudentDetails = () => {
               </ResponsiveContainer>
               <div className="flex justify-center space-x-4 mt-2">
                 <div className="flex items-center space-x-1">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-freesia rounded-full"></div>
                   <span className="text-xs text-gray-600">Trouxe</span>
                 </div>
                 <div className="flex items-center space-x-1">
@@ -354,7 +354,7 @@ export const StudentDetails = () => {
           {/* Gráfico de Linha - Histórico */}
           {studentStats.chartData.length > 0 && (
             <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold mb-4">Histórico de Presença (Últimos registros)</h3>
+              <h3 className="text-lg font-semibold mb-4">Histórico (Últimos registros)</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={studentStats.chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
