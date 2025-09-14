@@ -18,7 +18,7 @@ export const Student = ({ student, onAttendanceChange }) => {
         {/* Attendance Toggle */}
         <button
           onClick={() => onAttendanceChange(student.id, "present", !isPresent)}
-          className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors ${isPresent
+          className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${isPresent
               ? 'bg-green-100 text-green-700 hover:bg-green-200'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
