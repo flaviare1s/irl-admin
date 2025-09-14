@@ -1,53 +1,44 @@
 import { useState } from 'react'
-import { X, GraduationCap, Calendar, Users } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { X, GraduationCap, Calendar, User } from 'lucide-react'
 import { addClass } from '../firebase/class'
 
 export const AddClass = ({ icon, label, onClassAdded }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    year: new Date().getFullYear(),
-    maxStudents: 30,
-    teacher: ''
-  })
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm({
+    defaultValues: {
+      name: '',
+      year: new Date().getFullYear(),
+      responsible: ''
+    }
+  })
+
+  const onSubmit = async (data) => {
     setLoading(true)
-    setError('')
 
     try {
-      if (!formData.name.trim()) {
-        throw new Error('Nome da turma é obrigatório')
-      }
+      const newClass = await addClass({
+        name: data.name,
+        year: parseInt(data.year),
+        responsible: data.responsible,
+        status: 'active'
+      })
 
-      const newClass = await addClass(formData)
       if (onClassAdded) onClassAdded(newClass)
       setIsModalOpen(false)
-      setFormData({
-        name: '',
-        description: '',
-        year: new Date().getFullYear(),
-        maxStudents: 30,
-        teacher: ''
-      })
+      reset()
     } catch (err) {
-      setError(err.message)
+      console.error('Erro ao criar turma:', err)
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'year' || name === 'maxStudents' ? parseInt(value) : value
-    }))
   }
 
   return (
@@ -78,10 +69,10 @@ export const AddClass = ({ icon, label, onClassAdded }) => {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              {error && (
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+              {errors.name && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                  {error}
+                  {errors.name.message}
                 </div>
               )}
 
@@ -91,27 +82,16 @@ export const AddClass = ({ icon, label, onClassAdded }) => {
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  {...register('name', {
+                    required: 'Nome da turma é obrigatório',
+                    minLength: { value: 2, message: 'Nome deve ter pelo menos 2 caracteres' }
+                  })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Ex: Turma A, 1º Ano..."
-                  required
+                  placeholder="Ex: Turma I"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Descrição
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Descrição da turma..."
-                />
+                {errors.name && (
+                  <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -122,43 +102,31 @@ export const AddClass = ({ icon, label, onClassAdded }) => {
                   </label>
                   <input
                     type="number"
-                    name="year"
-                    value={formData.year}
-                    onChange={handleChange}
-                    min="2025"
+                    {...register('year', {
+                      required: 'Ano é obrigatório',
+                      min: { value: 2024, message: 'Ano deve ser maior que 2023' },
+                      max: { value: 2030, message: 'Ano deve ser menor que 2031' }
+                    })}
+                    min="2024"
                     max="2030"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Users className="w-4 h-4 inline mr-1" />
-                    Máx. Alunos
-                  </label>
-                  <input
-                    type="number"
-                    name="maxStudents"
-                    value={formData.maxStudents}
-                    onChange={handleChange}
-                    min="1"
-                    max="50"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
+                  {errors.year && (
+                    <p className="text-red-600 text-sm mt-1">{errors.year.message}</p>
+                  )}
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Professor Responsável
+                  <User className="w-4 h-4 inline mr-1" />
+                  Responsável pela turma
                 </label>
                 <input
                   type="text"
-                  name="teacher"
-                  value={formData.teacher}
-                  onChange={handleChange}
+                  {...register('responsible')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="Nome do professor..."
+                  placeholder="Nome do responsável"
                 />
               </div>
 

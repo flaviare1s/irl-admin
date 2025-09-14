@@ -29,10 +29,9 @@ export const addClass = async (classData) => {
     const docRef = await addDoc(collection(db, "turmas"), {
       name: classData.name,
       year: classData.year,
-      active: true,
-      description: classData.description || "",
-      maxStudents: classData.maxStudents || 30,
-      teacher: classData.teacher || "",
+      responsible: classData.responsible || "",
+      status: classData.status || "active",
+      students: [],
       createdAt: Timestamp.now(),
     });
     return { id: docRef.id, ...classData };
@@ -60,17 +59,20 @@ export async function getClassStatistics(year) {
   for (let turma of snapshot.docs) {
     totalClasses++;
     const turmaData = turma.data();
-    if (turmaData.active) activeClasses++;
+    if (turmaData.status === "active") activeClasses++;
 
-    const alunosSnap = await getDocs(
-      collection(db, "turmas", turma.id, "alunos")
+    const students = turmaData.students || [];
+    const activeStudents = students.filter(
+      (student) => student.status === "active"
     );
-    totalStudents += alunosSnap.size;
+    totalStudents += activeStudents.length;
 
     classes.push({
       id: turma.id,
       name: turmaData.name,
-      studentCount: alunosSnap.size,
+      studentCount: activeStudents.length,
+      responsible: turmaData.responsible,
+      status: turmaData.status,
     });
   }
 
@@ -102,12 +104,48 @@ export const getClassById = async (classId) => {
 // Adicionar aluno
 export async function addStudent(turmaId, studentData) {
   try {
+    if (!turmaId) {
+      throw new Error("ID da turma é obrigatório");
+    }
+
     const nome =
       typeof studentData === "string" ? studentData : studentData.name;
-    const alunoRef = await addDoc(collection(db, "turmas", turmaId, "alunos"), {
-      nome,
-    });
-    return { id: alunoRef.id, name: nome };
+
+    // Obter turma atual
+    const turmaRef = doc(db, "turmas", turmaId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const currentStudents = turmaData.students || [];
+
+    // Criar novo aluno
+    const newStudent = {
+      id: `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      name: nome,
+      status: "active",
+      dailyRecords: {}, // Objeto para armazenar registros por data
+    };
+
+    // Adicionar aluno ao array e ordenar alfabeticamente
+    const updatedStudents = [...currentStudents, newStudent].sort((a, b) =>
+      a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
+    );
+
+    // Atualizar documento da turma
+    await setDoc(
+      turmaRef,
+      {
+        ...turmaData,
+        students: updatedStudents,
+      },
+      { merge: true }
+    );
+
+    return newStudent;
   } catch (error) {
     console.error("Error adding student:", error);
     throw error;
@@ -115,8 +153,42 @@ export async function addStudent(turmaId, studentData) {
 }
 
 // Remover aluno
-export async function removeStudent(turmaId, alunoId) {
-  await deleteDoc(doc(db, "turmas", turmaId, "alunos", alunoId));
+export async function removeStudent(turmaId, studentId) {
+  try {
+    if (!turmaId || !studentId) {
+      throw new Error("ID da turma e do aluno são obrigatórios");
+    }
+
+    const turmaRef = doc(db, "turmas", turmaId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const currentStudents = turmaData.students || [];
+
+    // Remover aluno do array
+    const updatedStudents = currentStudents.filter(
+      (student) => student.id !== studentId
+    );
+
+    // Atualizar documento da turma
+    await setDoc(
+      turmaRef,
+      {
+        ...turmaData,
+        students: updatedStudents,
+      },
+      { merge: true }
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Error removing student:", error);
+    throw error;
+  }
 }
 
 // --- Registros diários ---
@@ -125,32 +197,38 @@ export async function getAttendanceByDate(
   turmaId,
   date = new Date().toISOString().slice(0, 10)
 ) {
-  const alunosSnap = await getDocs(collection(db, "turmas", turmaId, "alunos"));
-  const students = [];
+  try {
+    if (!turmaId) {
+      throw new Error("ID da turma é obrigatório");
+    }
 
-  for (let aluno of alunosSnap.docs) {
-    const registroRef = doc(
-      db,
-      "turmas",
-      turmaId,
-      "alunos",
-      aluno.id,
-      "registros",
-      date
-    );
-    const registroSnap = await getDoc(registroRef);
-    students.push({
-      id: aluno.id,
-      name: aluno.data().nome,
-      attendance: registroSnap.exists()
-        ? {
-            broughtHomework: registroSnap.data().tarefa || false,
-            broughtBackpack: registroSnap.data().mochila || false,
-          }
-        : null,
-    });
+    const turmaRef = doc(db, "turmas", turmaId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const students = turmaData.students || [];
+
+    // Retornar alunos com dados de presença do dia (já ordenados alfabeticamente)
+    return students.map((student) => ({
+      id: student.id,
+      name: student.name,
+      status: student.status,
+      attendance:
+        student.dailyRecords && student.dailyRecords[date]
+          ? {
+              broughtHomework: student.dailyRecords[date].homework || false,
+              broughtBackpack: student.dailyRecords[date].backpack || false,
+            }
+          : null,
+    }));
+  } catch (error) {
+    console.error("Error getting attendance by date:", error);
+    throw error;
   }
-  return students;
 }
 
 // Adicionar/atualizar registro diário
@@ -166,51 +244,109 @@ export async function addDailyAttendance(
       throw new Error("StudentId, date e classId são obrigatórios");
     }
 
-    const registroRef = doc(
-      db,
-      "turmas",
-      classId,
-      "alunos",
-      studentId,
-      "registros",
-      date
-    );
+    const turmaRef = doc(db, "turmas", classId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const students = turmaData.students || [];
+
+    // Encontrar e atualizar o aluno
+    const updatedStudents = students.map((student) => {
+      if (student.id === studentId) {
+        const dailyRecords = student.dailyRecords || {};
+        return {
+          ...student,
+          dailyRecords: {
+            ...dailyRecords,
+            [date]: {
+              homework: Boolean(broughtHomework),
+              backpack: Boolean(broughtBackpack),
+              timestamp: Timestamp.now(),
+            },
+          },
+        };
+      }
+      return student;
+    });
+
+    // Atualizar documento da turma
     await setDoc(
-      registroRef,
+      turmaRef,
       {
-        tarefa: Boolean(broughtHomework),
-        mochila: Boolean(broughtBackpack),
+        ...turmaData,
+        students: updatedStudents,
       },
       { merge: true }
     );
+
     return { studentId, date, broughtHomework, broughtBackpack };
   } catch (error) {
     console.error("Error adding attendance:", error);
     throw error;
   }
-}
-
-// Alternar campo do registro do dia (tarefa ou mochila)
+} // Alternar campo do registro do dia (tarefa ou mochila)
 export async function toggleStudentDailyField(
   turmaId,
-  alunoId,
+  studentId,
   field,
   date = new Date().toISOString().slice(0, 10)
 ) {
-  const registroRef = doc(
-    db,
-    "turmas",
-    turmaId,
-    "alunos",
-    alunoId,
-    "registros",
-    date
-  );
-  const registroSnap = await getDoc(registroRef);
-  const currentValue = registroSnap.exists()
-    ? registroSnap.data()[field]
-    : false;
-  await setDoc(registroRef, { [field]: !currentValue }, { merge: true });
+  try {
+    if (!turmaId || !studentId || !field) {
+      throw new Error("TurmaId, studentId e field são obrigatórios");
+    }
+
+    const turmaRef = doc(db, "turmas", turmaId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const students = turmaData.students || [];
+
+    // Encontrar e atualizar o campo específico do aluno
+    const updatedStudents = students.map((student) => {
+      if (student.id === studentId) {
+        const dailyRecords = student.dailyRecords || {};
+        const currentRecord = dailyRecords[date] || {};
+        const currentValue = currentRecord[field] || false;
+
+        return {
+          ...student,
+          dailyRecords: {
+            ...dailyRecords,
+            [date]: {
+              ...currentRecord,
+              [field]: !currentValue,
+              timestamp: Timestamp.now(),
+            },
+          },
+        };
+      }
+      return student;
+    });
+
+    // Atualizar documento da turma
+    await setDoc(
+      turmaRef,
+      {
+        ...turmaData,
+        students: updatedStudents,
+      },
+      { merge: true }
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Error toggling student daily field:", error);
+    throw error;
+  }
 }
 
 // Estatísticas de tarefa e mochila
@@ -226,20 +362,18 @@ export const getHomeworkBackpackStats = async (
     let backpackBrought = 0;
 
     for (let turma of snapshot.docs) {
-      const alunosSnap = await getDocs(
-        collection(db, "turmas", turma.id, "alunos")
-      );
+      const turmaData = turma.data();
+      const students = turmaData.students || [];
 
-      for (let aluno of alunosSnap.docs) {
-        const registrosSnap = await getDocs(
-          collection(db, "turmas", turma.id, "alunos", aluno.id, "registros")
-        );
+      for (let student of students) {
+        if (student.status === "active" && student.dailyRecords) {
+          const records = Object.values(student.dailyRecords);
 
-        for (let registro of registrosSnap.docs) {
-          const data = registro.data();
-          totalRecords++;
-          if (data.tarefa) homeworkBrought++;
-          if (data.mochila) backpackBrought++;
+          for (let record of records) {
+            totalRecords++;
+            if (record.homework) homeworkBrought++;
+            if (record.backpack) backpackBrought++;
+          }
         }
       }
     }
@@ -284,23 +418,32 @@ export const getClassStats = async (classId) => {
       throw new Error("ID da turma é obrigatório");
     }
 
-    const alunosSnap = await getDocs(
-      collection(db, "turmas", classId, "alunos")
+    const turmaRef = doc(db, "turmas", classId);
+    const turmaDoc = await getDoc(turmaRef);
+
+    if (!turmaDoc.exists()) {
+      throw new Error("Turma não encontrada");
+    }
+
+    const turmaData = turmaDoc.data();
+    const students = turmaData.students || [];
+    const activeStudents = students.filter(
+      (student) => student.status === "active"
     );
+
     let totalRecords = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
 
-    for (let aluno of alunosSnap.docs) {
-      const registrosSnap = await getDocs(
-        collection(db, "turmas", classId, "alunos", aluno.id, "registros")
-      );
+    for (let student of activeStudents) {
+      if (student.dailyRecords) {
+        const records = Object.values(student.dailyRecords);
 
-      for (let registro of registrosSnap.docs) {
-        const data = registro.data();
-        totalRecords++;
-        if (data.tarefa) homeworkBrought++;
-        if (data.mochila) backpackBrought++;
+        for (let record of records) {
+          totalRecords++;
+          if (record.homework) homeworkBrought++;
+          if (record.backpack) backpackBrought++;
+        }
       }
     }
 
@@ -317,7 +460,7 @@ export const getClassStats = async (classId) => {
           : 0,
       homeworkBrought,
       backpackBrought,
-      totalStudents: alunosSnap.size,
+      totalStudents: activeStudents.length,
     };
   } catch (error) {
     console.error("Error getting class stats:", error);
@@ -337,34 +480,27 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
     const classesStat = [];
 
     for (let turma of snapshot.docs) {
-      const alunosSnap = await getDocs(
-        collection(db, "turmas", turma.id, "alunos")
+      const turmaData = turma.data();
+      const students = turmaData.students || [];
+      const activeStudents = students.filter(
+        (student) => student.status === "active"
       );
+
       let classHomework = 0;
       let classBackpack = 0;
       let classStudents = 0;
 
-      for (let aluno of alunosSnap.docs) {
-        const registroRef = doc(
-          db,
-          "turmas",
-          turma.id,
-          "alunos",
-          aluno.id,
-          "registros",
-          date
-        );
-        const registroSnap = await getDoc(registroRef);
-
-        if (registroSnap.exists()) {
-          const data = registroSnap.data();
+      for (let student of activeStudents) {
+        if (student.dailyRecords && student.dailyRecords[date]) {
+          const record = student.dailyRecords[date];
           classStudents++;
           totalStudents++;
-          if (data.tarefa) {
+
+          if (record.homework) {
             classHomework++;
             homeworkBrought++;
           }
-          if (data.mochila) {
+          if (record.backpack) {
             classBackpack++;
             backpackBrought++;
           }
@@ -374,7 +510,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       if (classStudents > 0) {
         classesStat.push({
           classId: turma.id,
-          className: turma.data().name,
+          className: turmaData.name,
           students: classStudents,
           homeworkPercentage: Math.round((classHomework / classStudents) * 100),
           backpackPercentage: Math.round((classBackpack / classStudents) * 100),

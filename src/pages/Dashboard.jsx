@@ -134,11 +134,10 @@ export const Dashboard = () => {
         ) : (
           <>
             {/* Estatísticas Gerais */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <StatiticCard title="Turmas Cadastradas" value={stats.totalClasses} icon={<BookOpen className="w-6 h-6 text-white" />} />
-              <StatiticCard title="Turmas Ativas" value={stats.activeClasses} icon={<Activity className="w-6 h-6 text-white" />} />
               <StatiticCard title="Total de Alunos" value={stats.totalStudents} icon={<Users className="w-6 h-6 text-white" />} />
-              <StatiticCard title="Total de Funcionários" value={stats.totalEmployees} icon={<UsersRound className="w-6 h-6 text-white" />} />
+             
             </div>
 
             {/* Gráficos e Estatísticas Rápidas */}
