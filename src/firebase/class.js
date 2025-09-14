@@ -385,9 +385,7 @@ export const getHomeworkBackpackStats = async (
 
     return {
       attendancePercentage:
-        totalRecords > 0
-          ? Math.round((presentCount / totalRecords) * 100)
-          : 0,
+        totalRecords > 0 ? Math.round((presentCount / totalRecords) * 100) : 0,
       homeworkPercentage:
         totalRecords > 0
           ? Math.round((homeworkBrought / totalRecords) * 100)
@@ -403,14 +401,14 @@ export const getHomeworkBackpackStats = async (
     };
   } catch (error) {
     console.error("Error getting homework/backpack stats:", error);
-    return { 
-      attendancePercentage: 0, 
-      homeworkPercentage: 0, 
-      backpackPercentage: 0, 
+    return {
+      attendancePercentage: 0,
+      homeworkPercentage: 0,
+      backpackPercentage: 0,
       totalRecords: 0,
       presentCount: 0,
       homeworkBrought: 0,
-      backpackBrought: 0
+      backpackBrought: 0,
     };
   }
 };
@@ -473,9 +471,7 @@ export const getClassStats = async (classId) => {
       classId,
       totalRecords,
       attendancePercentage:
-        totalRecords > 0
-          ? Math.round((presentCount / totalRecords) * 100)
-          : 0,
+        totalRecords > 0 ? Math.round((presentCount / totalRecords) * 100) : 0,
       homeworkPercentage:
         totalRecords > 0
           ? Math.round((homeworkBrought / totalRecords) * 100)

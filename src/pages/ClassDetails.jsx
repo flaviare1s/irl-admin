@@ -170,11 +170,10 @@ export const ClassDetails = () => {
                       <Users className="w-5 h-5 mr-2 text-gray-500" />
                       {student.name}
                     </h4>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      student.attendance?.isPresent 
-                        ? 'bg-green-100 text-green-800' 
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${student.attendance?.isPresent
+                        ? 'bg-green-100 text-green-800'
                         : 'bg-gray-100 text-gray-600'
-                    }`}>
+                      }`}>
                       {student.attendance?.isPresent ? 'Presente' : 'Ausente'}
                     </span>
                   </div>
@@ -193,11 +192,10 @@ export const ClassDetails = () => {
                           "present",
                           !student.attendance?.isPresent
                         )}
-                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${
-                          student.attendance?.isPresent
+                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${student.attendance?.isPresent
                             ? "bg-green-100 text-green-700 border-2 border-green-300"
                             : "bg-gray-100 text-gray-500 border-2 border-gray-300"
-                        }`}
+                          }`}
                       >
                         {student.attendance?.isPresent ? (
                           <Check className="w-5 h-5" />
@@ -222,11 +220,10 @@ export const ClassDetails = () => {
                           "homework",
                           !student.attendance?.broughtHomework
                         )}
-                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${
-                          student.attendance?.broughtHomework
+                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${student.attendance?.broughtHomework
                             ? "bg-blue-100 text-blue-700 border-2 border-blue-300"
                             : "bg-gray-100 text-gray-500 border-2 border-gray-300"
-                        }`}
+                          }`}
                       >
                         {student.attendance?.broughtHomework ? (
                           <Check className="w-5 h-5" />
@@ -251,11 +248,10 @@ export const ClassDetails = () => {
                           "backpack",
                           !student.attendance?.broughtBackpack
                         )}
-                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${
-                          student.attendance?.broughtBackpack
+                        className={`flex items-center justify-center space-x-2 p-3 rounded-lg transition-colors ${student.attendance?.broughtBackpack
                             ? "bg-purple-100 text-purple-700 border-2 border-purple-300"
                             : "bg-gray-100 text-gray-500 border-2 border-gray-300"
-                        }`}
+                          }`}
                       >
                         {student.attendance?.broughtBackpack ? (
                           <Check className="w-5 h-5" />

@@ -163,9 +163,9 @@ export const Statistics = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Frequência Média</p>
-                <p className="text-2xl font-bold text-green-600">{overallStats.attendancePercentage || 0}%</p>
+                <p className="text-2xl font-bold text-greenery">{overallStats.attendancePercentage || 0}%</p>
               </div>
-              <Users className="h-8 w-8 text-green-600" />
+              <Users className="h-8 w-8 text-greenery" />
             </div>
           </div>
 
@@ -173,9 +173,9 @@ export const Statistics = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Média - Tarefa</p>
-                <p className="text-2xl font-bold text-blue-600">{overallStats.homeworkPercentage}%</p>
+                <p className="text-2xl font-bold text-primary">{overallStats.homeworkPercentage}%</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-blue-600" />
+              <BarChart3 className="h-8 w-8 text-primary" />
             </div>
           </div>
 
@@ -183,9 +183,9 @@ export const Statistics = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Média - Mochila</p>
-                <p className="text-2xl font-bold text-red-600">{overallStats.backpackPercentage}%</p>
+                <p className="text-2xl font-bold text-living-coral">{overallStats.backpackPercentage}%</p>
               </div>
-              <BarChart3 className="h-8 w-8 text-red-600" />
+              <BarChart3 className="h-8 w-8 text-living-coral" />
             </div>
           </div>
 
@@ -203,9 +203,9 @@ export const Statistics = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Turmas Ativas</p>
-                <p className="text-2xl font-bold text-purple-600">{classesData.length}</p>
+                <p className="text-2xl font-bold text-radiant-orchid">{classesData.length}</p>
               </div>
-              <Calendar className="h-8 w-8 text-purple-600" />
+              <Calendar className="h-8 w-8 text-radiant-orchid" />
             </div>
           </div>
         </div>
@@ -250,15 +250,15 @@ export const Statistics = () => {
                     </div>
                     <div className="text-center">
                       <p className="text-sm text-gray-600">Frequência</p>
-                      <p className="text-2xl font-bold text-green-600">{dailyData.attendancePercentage}%</p>
+                      <p className="text-2xl font-bold text-greenery">{dailyData.attendancePercentage}%</p>
                     </div>
                     <div className="text-center">
                       <p className="text-sm text-gray-600">Tarefa trazida</p>
-                      <p className="text-2xl font-bold text-blue-600">{dailyData.homeworkPercentage}%</p>
+                      <p className="text-2xl font-bold text-primary">{dailyData.homeworkPercentage}%</p>
                     </div>
                     <div className="text-center">
                       <p className="text-sm text-gray-600">Mochila trazida</p>
-                      <p className="text-2xl font-bold text-red-600">{dailyData.backpackPercentage}%</p>
+                      <p className="text-2xl font-bold text-living-coral">{dailyData.backpackPercentage}%</p>
                     </div>
                   </div>
 
