@@ -18,7 +18,10 @@ import { Loader } from '../components/Loader';
 
 export const Statistics = () => {
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  });
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
@@ -226,26 +229,22 @@ export const Statistics = () => {
           <div className="mb-8">
             <div className="bg-white p-6 rounded-lg shadow-sm border">
               <h3 className="text-lg font-semibold mb-4">
-                Estatísticas do dia {new Date(selectedDate).toLocaleDateString('pt-BR')}
+                Estatísticas do dia {selectedDate.split('-').reverse().join('/')}
               </h3>
 
               {dailyData.totalStudents > 0 ? (
                 <div>
-                  <div className="grid md:grid-cols-4 gap-4 mb-6">
-                    <div className="text-center">
-                      <p className="text-sm text-gray-600">Alunos registrados</p>
-                      <p className="text-2xl font-bold text-gray-900">{dailyData.totalStudents}</p>
-                    </div>
+                  <div className="grid md:grid-cols-3 gap-4 mb-6">
                     <div className="text-center">
                       <p className="text-sm text-gray-600">Frequência</p>
                       <p className="text-2xl font-bold text-greenery">{dailyData.attendancePercentage}%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Tarefa trazida</p>
+                      <p className="text-sm text-gray-600">Tarefa</p>
                       <p className="text-2xl font-bold text-primary">{dailyData.homeworkPercentage}%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Mochila trazida</p>
+                      <p className="text-sm text-gray-600">Mochila</p>
                       <p className="text-2xl font-bold text-living-coral">{dailyData.backpackPercentage}%</p>
                     </div>
                   </div>
