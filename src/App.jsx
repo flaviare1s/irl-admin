@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './firebase/config'
 import { Dashboard } from './pages/Dashboard'
+import { ScrollToTop } from './components/ScrollToTop'
 
 function App() {
   const [userLogged, setUserLogged] = useState(null)
@@ -29,6 +30,7 @@ function App() {
   return (
     <>
     <UserContext.Provider value={ userLogged }>
+      <ScrollToTop />
       <Header />
       <main className='flex flex-col justify-center items-center m-auto min-h-[calc(100vh-80px)] p-4'>
         <Routes>
