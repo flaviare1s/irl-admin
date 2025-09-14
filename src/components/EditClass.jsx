@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { deleteClass } from "../firebase/class";
+import { Trash } from "lucide-react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const EditClass = ({ classData, onSave, onCancel }) => {
+  const navigate = useNavigate();
   const [editData, setEditData] = useState({
     name: classData.name,
     responsible: classData.responsible,
@@ -11,6 +16,15 @@ export const EditClass = ({ classData, onSave, onCancel }) => {
   const handleSave = () => {
     onSave(editData);
   };
+
+  const handleDelete = () => {
+    const remove = window.confirm("Tem certeza que deseja deletar esta turma? Esta ação não pode ser desfeita.");
+    if (remove) {
+      deleteClass(classData.id);
+      toast.success("Turma deletada com sucesso!");
+      navigate('/dashboard');
+    }
+  }
 
   return (
     <div className="fixed inset-0 bg-[#000000ca] flex items-center justify-center z-50 p-4">
@@ -90,8 +104,15 @@ export const EditClass = ({ classData, onSave, onCancel }) => {
               Salvar
             </button>
           </div>
+          <button
+            onClick={handleDelete}
+            className="flex px-4 py-2 text-red-600 bg--white rounded-lg hover:text-red-700 transition-colors cursor-pointer w-full items-center justify-center mt-4 border border-red-600 font-semibold"
+          >
+            <Trash className="w-4 h-4 mr-2" />
+            Deletar Turma
+          </button>
         </div>
       </div>
     </div>
-  );
+  ); 
 };
