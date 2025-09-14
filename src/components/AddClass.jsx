@@ -45,14 +45,14 @@ export const AddClass = ({ icon, label, onClassAdded }) => {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="bg-white hover:bg-primary hover:text-white transition-colors duration-200 border-2 border-primary text-primary p-6 rounded-lg shadow-sm flex items-center justify-center space-x-3 group"
+        className="bg-white hover:bg-primary hover:text-white transition-colors duration-200 border-2 border-primary text-primary p-6 rounded-lg shadow-sm flex items-center justify-center space-x-3 group cursor-pointer"
       >
         {icon}
         <span className="text-lg font-semibold">{label}</span>
       </button>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-[#000000ca] flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center space-x-3">
