@@ -16,6 +16,8 @@ import { CreateClass } from './pages/CreateClass'
 import { ClassDetails } from './pages/ClassDetails'
 import { Statistics } from './pages/Statistics'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { StudentDetails } from './pages/StudentDetails'
+import EditStudent from './pages/EditStudent'
 
 function App() {
   const [userLogged, setUserLogged] = useState(null)
@@ -44,6 +46,8 @@ function App() {
             <Route path='/dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path='/create-class' element={<ProtectedRoute><CreateClass /></ProtectedRoute>} />
             <Route path='/class/:id' element={<ProtectedRoute><ClassDetails /></ProtectedRoute>} />
+            <Route path='/student/:id' element={<ProtectedRoute><StudentDetails /></ProtectedRoute>} />
+            <Route path='/edit-student/:id' element={<ProtectedRoute><EditStudent /></ProtectedRoute>} />
             <Route path='/statistics' element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
             <Route path='/reset-password' element={<ResetPassword />} />
             <Route path='*' element={<NotFound />} />

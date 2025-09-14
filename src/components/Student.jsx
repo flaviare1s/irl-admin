@@ -1,4 +1,5 @@
-import { User, BookOpen, Backpack, UserCheck, UserX } from "lucide-react";
+import { User, BookOpen, Backpack, UserCheck, UserX, Eye, Settings } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Student = ({ student, onAttendanceChange }) => {
   const isPresent = student.attendance?.isPresent;
@@ -12,6 +13,18 @@ export const Student = ({ student, onAttendanceChange }) => {
           <User className="w-4 h-4 mr-2 text-gray-400" />
           {student.name}
         </h4>
+        <div className="flex items-center gap-[6px] ml-2">
+          <div>
+            <Link to={`/edit-student/${student.id}`} className="text-living-coral hover:text-orange-700">
+              <Eye className="w-4 h-4" />
+            </Link>
+          </div>
+          <div>
+            <Link to={`student/${student.id}`} className="text-greenery hover:text-green-800">
+              <Settings className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center justify-between">

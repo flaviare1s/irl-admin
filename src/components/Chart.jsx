@@ -188,7 +188,7 @@ export const PercentagePieChart = ({ homeworkPercentage, backpackPercentage, att
               <Tooltip formatter={(value) => `${value}%`} />
             </PieChart>
           </ResponsiveContainer>
-          <p className="text-center text-2xl font-bold text-blue-600">{homeworkPercentage}%</p>
+          <p className="text-center text-2xl font-bold text-primary">{homeworkPercentage}%</p>
         </div>
 
         <div>
