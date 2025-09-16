@@ -133,4 +133,4 @@ Para demonstrar seu funcionamento, foi preparado um vídeo de prévia que mostra
 
 https://github.com/user-attachments/assets/37b8e4cd-d075-4ea9-a380-afc5bb89234c
 
-**Desenvolvido com ❤️ para o Instituto Dr. Rocha Lima**  
+**Desenvolvido para o Instituto Dr. Rocha Lima de Proteção e Assistência à Infância**  
