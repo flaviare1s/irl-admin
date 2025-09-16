@@ -1,10 +1,16 @@
 # IRL Admin - Painel Administrativo
 
-Sistema de gestão educacional desenvolvido para o **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância** como parte do **Projeto de Extensão II (PEX II)** da faculdade.
+Sistema de gestão educacional desenvolvido para o **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância** como parte do **Projeto de Extensão II (PEX II)** da faculdade Descomplica.
 
 ## Sobre o Projeto
 
-O **IRL Admin** é um painel administrativo web desenvolvido especificamente para auxiliar a gestão pedagógica da ONG Instituto Dr. Rocha Lima. O sistema permite o controle diário de frequência, acompanhamento de tarefas de casa e organização de materiais escolares dos alunos.
+O **IRL Admin** é um painel administrativo web desenvolvido especificamente para auxiliar a gestão pedagógica da ONG Instituto Dr. Rocha Lima. 
+Também são gerados relatórios a partir dos dados coletados.
+
+## Problemática
+
+Durante a visita à ONG, os educadores relataram a dificuldade em manter um controle organizado e centralizado sobre a frequência dos alunos, o cumprimento das tarefas escolares e a verificação de materiais escolares. Esses processos eram feitos de forma manual, o que demandava tempo, dificultava o acompanhamento pedagógico e limitava a geração de relatórios consolidados para análise.
+O IRL Admin surge como resposta a essa necessidade, oferecendo uma solução digital prática e acessível que otimiza o trabalho dos educadores e melhora a gestão pedagógica da instituição.
 
 ### Objetivo
 
@@ -120,5 +126,11 @@ Este projeto foi desenvolvido como parte do **Projeto de Extensão II (PEX II)**
 
 O **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância** é uma organização sem fins lucrativos dedicada ao desenvolvimento educacional e social de crianças e adolescentes, promovendo educação de qualidade e formação cidadã.
 
+## Visualização da Interface
+
+O acesso ao sistema é restrito a funcionários cadastrados.
+Para demonstrar seu funcionamento, foi preparado um vídeo de prévia que mostra as principais telas e recursos do painel em uso, evidenciando a experiência real de navegação e gestão dentro da plataforma.
+
+https://github.com/user-attachments/assets/37b8e4cd-d075-4ea9-a380-afc5bb89234c
 
 **Desenvolvido com ❤️ para o Instituto Dr. Rocha Lima**  
