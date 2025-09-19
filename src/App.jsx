@@ -18,6 +18,7 @@ import { Statistics } from './pages/Statistics'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { StudentDetails } from './pages/StudentDetails'
 import { EditStudent } from './pages/EditStudent'
+import { Unauthorized } from './pages/Unauthorized'
 
 function App() {
   const [userLogged, setUserLogged] = useState(null)
@@ -50,6 +51,7 @@ function App() {
             <Route path='/class/:classId/edit-student/:studentId' element={<ProtectedRoute><EditStudent /></ProtectedRoute>} />
             <Route path='/statistics' element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
             <Route path='/reset-password' element={<ResetPassword />} />
+            <Route path='/401' element={<Unauthorized />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
           <Toaster position="top-center" />
