@@ -1,18 +1,24 @@
 # IRL Admin - Painel Administrativo
 
+<div align="center">
+
+[![pt-BR](https://img.shields.io/badge/lang-pt--BR-green.svg)](README.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](README.en.md)
+
+</div>
+
 Sistema de gestão educacional desenvolvido para o **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância** como parte do **Projeto de Extensão II (PEX II)** da faculdade Descomplica.
 
-## Sobre o Projeto
+## 📋 Sobre o Projeto
 
-O **IRL Admin** é um painel administrativo web desenvolvido especificamente para auxiliar a gestão pedagógica da ONG Instituto Dr. Rocha Lima. 
-Também são gerados relatórios a partir dos dados coletados.
+O **IRL Admin** é um painel administrativo web desenvolvido especificamente para auxiliar a gestão pedagógica da ONG Instituto Dr. Rocha Lima. O sistema permite controle eficiente da presença dos alunos, acompanhamento de tarefas e geração de relatórios detalhados a partir dos dados coletados, facilitando o trabalho dos educadores e melhorando o acompanhamento pedagógico.
 
-## Problemática
+## 🎯 Problemática
 
 Durante a visita à ONG, os educadores relataram a dificuldade em manter um controle organizado e centralizado sobre a frequência dos alunos, o cumprimento das tarefas escolares e a verificação de materiais escolares. Esses processos eram feitos de forma manual, o que demandava tempo, dificultava o acompanhamento pedagógico e limitava a geração de relatórios consolidados para análise.
 O IRL Admin surge como resposta a essa necessidade, oferecendo uma solução digital prática e acessível que otimiza o trabalho dos educadores e melhora a gestão pedagógica da instituição.
 
-### Objetivo
+### 🚀 Objetivo
 
 Facilitar o trabalho dos educadores da ONG através de uma ferramenta digital que permite:
 
@@ -21,7 +27,7 @@ Facilitar o trabalho dos educadores da ONG através de uma ferramenta digital qu
 - Verificação de materiais escolares (mochila)
 - Geração de estatísticas e relatórios para acompanhamento pedagógico
 
-## Funcionalidades Principais
+## ✨ Funcionalidades Principais
 
 ### Gestão de Turmas
 
@@ -54,19 +60,25 @@ Facilitar o trabalho dos educadores da ONG através de uma ferramenta digital qu
 - **Controle de status** (ativo/inativo) para gestão de matrículas
 - **Interface minimalista** para facilitar o uso diário
 
-## Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
-- **Frontend**: React 18 + Vite
+### Frontend
+
+- **Framework**: React 18
+- **Build Tool**: Vite
 - **Estilização**: Tailwind CSS
 - **Ícones**: Lucide React
 - **Gráficos**: Recharts
-- **Formulários**: React Hook Form
-- **Backend**: Firebase Firestore
-- **Autenticação**: Firebase Auth
-- **Hospedagem**: Firebase Hosting
+- **Formulários**: React Hook Form + React Hot Toast
 - **Roteamento**: React Router DOM
 
-## Responsividade
+### Backend & Infraestrutura
+
+- **Database**: Firebase Firestore
+- **Autenticação**: Firebase Auth
+- **Hospedagem**: Firebase Hosting
+
+## 📱 Responsividade
 
 O sistema foi desenvolvido com **mobile-first design**, garantindo uma experiência otimizada em:
 
@@ -74,7 +86,7 @@ O sistema foi desenvolvido com **mobile-first design**, garantindo uma experiên
 - Tablets e desktops
 - Monitores de diferentes resoluções
 
-## Interface do Usuário
+## 🎨 Interface do Usuário
 
 ### Design System
 
@@ -90,7 +102,7 @@ O sistema foi desenvolvido com **mobile-first design**, garantindo uma experiên
 - **Contraste adequado** para facilitar a leitura
 - **Textos descritivos** para orientação do usuário
 
-## Funcionalidades de Análise
+## 📊 Funcionalidades de Análise
 
 ### Cálculos Estatísticos
 
@@ -106,14 +118,14 @@ O sistema foi desenvolvido com **mobile-first design**, garantindo uma experiên
 - **Gráficos de barras**: Comparação entre diferentes turmas
 - **Tabelas estatísticas**: Dados numéricos detalhados
 
-## Segurança e Dados
+## 🔒 Segurança e Dados
 
 - **Autenticação Firebase**: Login seguro para educadores
 - **Proteção de rotas**: Acesso restrito a usuários autenticados
 - **Backup automático**: Dados armazenados na nuvem Firebase
 - **Privacidade**: Conformidade com diretrizes de proteção de dados de menores
 
-## Contexto Acadêmico
+## 🎓 Contexto Acadêmico
 
 Este projeto foi desenvolvido como parte do **Projeto de Extensão II (PEX II)**, demonstrando:
 
@@ -122,15 +134,62 @@ Este projeto foi desenvolvido como parte do **Projeto de Extensão II (PEX II)**
 - **Colaboração** entre academia e terceiro setor
 - **Impacto social** através da tecnologia
 
-## Sobre a ONG
+## 🏛️ Sobre a ONG
 
 O **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância** é uma organização sem fins lucrativos dedicada ao desenvolvimento educacional e social de crianças e adolescentes, promovendo educação de qualidade e formação cidadã.
 
-## Visualização da Interface
+## 🎥 Visualização da Interface
 
 O acesso ao sistema é restrito a funcionários cadastrados.
 Para demonstrar seu funcionamento, foi preparado um vídeo de prévia que mostra as principais telas e recursos do painel em uso, evidenciando a experiência real de navegação e gestão dentro da plataforma.
 
 https://github.com/user-attachments/assets/37b8e4cd-d075-4ea9-a380-afc5bb89234c
 
-**Desenvolvido para o Instituto Dr. Rocha Lima de Proteção e Assistência à Infância**  
+## 🚀 Como Executar o Projeto
+
+### Pré-requisitos
+
+- Node.js (versão 18 ou superior)
+- npm ou yarn
+- Conta Firebase com projeto configurado
+
+### Instalação
+
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/irl-admin.git
+
+# Entre na pasta do projeto
+cd irl-admin
+
+# Instale as dependências
+npm install
+
+# Configure as variáveis de ambiente
+# Edite src/firebase/config.js com suas credenciais Firebase
+
+# Execute o projeto em modo de desenvolvimento
+npm run dev
+```
+
+### Build para Produção
+
+```bash
+# Crie a build otimizada
+npm run build
+
+# Visualize a build localmente
+npm run preview
+```
+
+## 📄 Licença
+
+Este projeto foi desenvolvido para uso exclusivo do **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância**.
+
+---
+
+<div align="center">
+
+**Desenvolvido com ❤️ para o Instituto Dr. Rocha Lima de Proteção e Assistência à Infância**
+
+</div>
