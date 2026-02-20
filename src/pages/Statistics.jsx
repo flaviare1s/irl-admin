@@ -107,7 +107,7 @@ export const Statistics = () => {
   }
 
   return (
-    <div className="lg:max-w-[1000px] p-6 w-full mx-auto">
+    <div className="lg:max-w-[1000px] p-1 sm:p-6 w-full mx-auto">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
