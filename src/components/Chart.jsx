@@ -87,16 +87,21 @@ export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) 
     );
   }
 
-  const chartData = data.map(item => ({
-    date: new Date(item.date).toLocaleDateString('pt-BR', {
-      month: 'short',
-      day: 'numeric'
-    }),
-    frequencia: item.attendancePercentage,
-    tarefa: item.homeworkPercentage,
-    mochila: item.backpackPercentage,
-    alunos: item.totalStudents
-  }));
+  const chartData = data.map(item => {
+    // Parsear data manualmente para evitar problemas de timezone
+    const [year, month, day] = item.date.split('-').map(Number);
+    const date = new Date(year, month - 1, day); // month é 0-indexed
+    return {
+      date: date.toLocaleDateString('pt-BR', {
+        month: 'short',
+        day: 'numeric'
+      }),
+      frequencia: item.attendancePercentage,
+      tarefa: item.homeworkPercentage,
+      mochila: item.backpackPercentage,
+      alunos: item.totalStudents
+    };
+  });
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border">
@@ -321,13 +326,17 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
     );
   }
 
-  const chartData = data.dailyStats.map(item => ({
-    date: new Date(item.date).getDate(),
-    frequencia: item.attendancePercentage,
-    tarefa: item.homeworkPercentage,
-    mochila: item.backpackPercentage,
-    alunos: item.totalStudents
-  }));
+  const chartData = data.dailyStats.map(item => {
+    // Parsear data manualmente para evitar problemas de timezone
+    const [_year, _month, day] = item.date.split('-').map(Number);
+    return {
+      date: day,
+      frequencia: item.attendancePercentage,
+      tarefa: item.homeworkPercentage,
+      mochila: item.backpackPercentage,
+      alunos: item.totalStudents
+    };
+  });
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border">
