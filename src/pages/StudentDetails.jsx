@@ -363,7 +363,11 @@ export const StudentDetails = () => {
                 <LineChart data={studentStats.chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis domain={[0, 1]} tickFormatter={(value) => value === 1 ? 'Sim' : 'Não'} />
+                  <YAxis 
+                    domain={[0, 1]} 
+                    ticks={[0, 1]}
+                    tickFormatter={(value) => value === 1 ? 'Sim' : 'Não'} 
+                  />
                   <Tooltip
                     formatter={(value, name) => {
                       const labels = {
