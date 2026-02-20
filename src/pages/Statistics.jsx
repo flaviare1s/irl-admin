@@ -232,8 +232,8 @@ export const Statistics = () => {
         {/* Estatísticas diárias */}
         {dailyData && (
           <div className="mb-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold mb-4">
+            <div className="bg-white p-0.5 sm:p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold m-4">
                 Estatísticas do dia {selectedDate.split('-').reverse().join('/')}
               </h3>
 
