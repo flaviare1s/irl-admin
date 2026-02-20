@@ -60,7 +60,7 @@ export const Statistics = () => {
       const classes = await getClassesByYear(selectedYear);
       const classStats = await Promise.all(
         classes.map(async (classItem) => {
-          const stats = await getClassStats(classItem.id);
+          const stats = await getClassStats(classItem.id, selectedYear);
           return {
             classId: classItem.id,
             className: classItem.name,

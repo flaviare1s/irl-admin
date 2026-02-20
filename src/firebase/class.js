@@ -382,16 +382,18 @@ export async function addDailyAttendance(
     const updatedStudents = students.map((student) => {
       if (student.id === studentId) {
         const dailyRecords = student.dailyRecords || {};
+        const newRecord = {
+          present: Boolean(isPresent),
+          homework: Boolean(broughtHomework),
+          backpack: Boolean(broughtBackpack),
+          timestamp: Timestamp.now(),
+        };
+
         return {
           ...student,
           dailyRecords: {
             ...dailyRecords,
-            [date]: {
-              present: Boolean(isPresent),
-              homework: Boolean(broughtHomework),
-              backpack: Boolean(broughtBackpack),
-              timestamp: Timestamp.now(),
-            },
+            [date]: newRecord,
           },
         };
       }
@@ -502,9 +504,10 @@ export const getHomeworkBackpackStats = async (
 
             if (record.present === true) {
               presentCount++;
+              // Só conta tarefa/mochila se estiver presente
+              if (record.homework === true) homeworkBrought++;
+              if (record.backpack === true) backpackBrought++;
             }
-            if (record.homework === true) homeworkBrought++;
-            if (record.backpack === true) backpackBrought++;
           }
         }
       }
@@ -586,18 +589,26 @@ export const getClassStats = async (classId, year = null) => {
     for (let student of activeStudents) {
       if (student.dailyRecords) {
         // Filtrar por ano se especificado
-        const records = Object.entries(student.dailyRecords)
-          .filter(([date, record]) => {
+        const records = Object.entries(student.dailyRecords).filter(
+          ([date, record]) => {
             if (year === null) return true;
             return date.startsWith(`${year}-`);
-          })
-          .map(([date, record]) => record);
+          },
+        );
 
-        for (let record of records) {
+        for (let [date, record] of records) {
           totalStudentDays++;
-          if (record.present === true) presentCount++;
-          if (record.homework === true) homeworkBrought++;
-          if (record.backpack === true) backpackBrought++;
+
+          const isPresent = record.present === true;
+          const hasHomework = record.homework === true;
+          const hasBackpack = record.backpack === true;
+
+          if (isPresent) {
+            presentCount++;
+            // Só conta tarefa/mochila se estiver presente
+            if (hasHomework) homeworkBrought++;
+            if (hasBackpack) backpackBrought++;
+          }
         }
       }
     }
@@ -660,12 +671,13 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
 
           if (record.present === true) {
             classPresent++;
-          }
-          if (record.homework === true) {
-            classHomework++;
-          }
-          if (record.backpack === true) {
-            classBackpack++;
+            // Só conta tarefa/mochila se estiver presente
+            if (record.homework === true) {
+              classHomework++;
+            }
+            if (record.backpack === true) {
+              classBackpack++;
+            }
           }
         }
         // Se não tem registro, conta como ausente (0 para tudo)
