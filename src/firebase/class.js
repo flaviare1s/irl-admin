@@ -63,7 +63,7 @@ export async function getClassStatistics(year) {
 
     const students = turmaData.students || [];
     const activeStudents = students.filter(
-      (student) => student.status === "active"
+      (student) => student.status === "active",
     );
     totalStudents += activeStudents.length;
 
@@ -149,7 +149,7 @@ export async function addStudent(turmaId, studentData) {
 
     // Adicionar aluno ao array e ordenar alfabeticamente
     const updatedStudents = [...currentStudents, newStudent].sort((a, b) =>
-      a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
+      a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" }),
     );
 
     // Atualizar documento da turma
@@ -159,7 +159,7 @@ export async function addStudent(turmaId, studentData) {
         ...turmaData,
         students: updatedStudents,
       },
-      { merge: true }
+      { merge: true },
     );
 
     return newStudent;
@@ -189,7 +189,7 @@ export async function updateStudent(turmaId, studentId, studentData) {
 
     // Encontrar índice do aluno
     const studentIndex = currentStudents.findIndex(
-      (student) => student.id === studentId
+      (student) => student.id === studentId,
     );
 
     if (studentIndex === -1) {
@@ -209,7 +209,7 @@ export async function updateStudent(turmaId, studentId, studentData) {
     // Ordenar alfabeticamente se o nome foi alterado
     if (studentData.name) {
       updatedStudents.sort((a, b) =>
-        a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })
+        a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" }),
       );
     }
 
@@ -220,7 +220,7 @@ export async function updateStudent(turmaId, studentId, studentData) {
         ...turmaData,
         students: updatedStudents,
       },
-      { merge: true }
+      { merge: true },
     );
 
     return updatedStudent;
@@ -250,7 +250,7 @@ export async function deleteStudent(turmaId, studentId) {
 
     // Filtrar aluno a ser removido
     const updatedStudents = currentStudents.filter(
-      (student) => student.id !== studentId
+      (student) => student.id !== studentId,
     );
 
     if (updatedStudents.length === currentStudents.length) {
@@ -264,7 +264,7 @@ export async function deleteStudent(turmaId, studentId) {
         ...turmaData,
         students: updatedStudents,
       },
-      { merge: true }
+      { merge: true },
     );
 
     return true;
@@ -293,7 +293,7 @@ export async function removeStudent(turmaId, studentId) {
 
     // Remover aluno do array
     const updatedStudents = currentStudents.filter(
-      (student) => student.id !== studentId
+      (student) => student.id !== studentId,
     );
 
     // Atualizar documento da turma
@@ -303,7 +303,7 @@ export async function removeStudent(turmaId, studentId) {
         ...turmaData,
         students: updatedStudents,
       },
-      { merge: true }
+      { merge: true },
     );
 
     return true;
@@ -317,7 +317,7 @@ export async function removeStudent(turmaId, studentId) {
 // Obter alunos com registro do dia
 export async function getAttendanceByDate(
   turmaId,
-  date = new Date().toISOString().slice(0, 10)
+  date = new Date().toISOString().slice(0, 10),
 ) {
   try {
     if (!turmaId) {
@@ -361,7 +361,7 @@ export async function addDailyAttendance(
   isPresent,
   broughtHomework,
   broughtBackpack,
-  classId
+  classId,
 ) {
   try {
     if (!studentId || !date || !classId) {
@@ -405,7 +405,7 @@ export async function addDailyAttendance(
         ...turmaData,
         students: updatedStudents,
       },
-      { merge: true }
+      { merge: true },
     );
 
     return { studentId, date, isPresent, broughtHomework, broughtBackpack };
@@ -418,7 +418,7 @@ export async function toggleStudentDailyField(
   turmaId,
   studentId,
   field,
-  date = new Date().toISOString().slice(0, 10)
+  date = new Date().toISOString().slice(0, 10),
 ) {
   try {
     if (!turmaId || !studentId || !field) {
@@ -464,7 +464,7 @@ export async function toggleStudentDailyField(
         ...turmaData,
         students: updatedStudents,
       },
-      { merge: true }
+      { merge: true },
     );
 
     return true;
@@ -476,7 +476,7 @@ export async function toggleStudentDailyField(
 
 // Estatísticas de tarefa, mochila e frequência
 export const getHomeworkBackpackStats = async (
-  year = new Date().getFullYear()
+  year = new Date().getFullYear(),
 ) => {
   try {
     const q = query(collection(db, "turmas"), where("year", "==", year));
@@ -516,12 +516,12 @@ export const getHomeworkBackpackStats = async (
           ? Math.round((presentCount / totalStudentDays) * 100)
           : 0,
       homeworkPercentage:
-        totalStudentDays > 0
-          ? Math.round((homeworkBrought / totalStudentDays) * 100)
+        presentCount > 0
+          ? Math.round((homeworkBrought / presentCount) * 100)
           : 0,
       backpackPercentage:
-        totalStudentDays > 0
-          ? Math.round((backpackBrought / totalStudentDays) * 100)
+        presentCount > 0
+          ? Math.round((backpackBrought / presentCount) * 100)
           : 0,
       totalRecords: totalStudentDays,
       presentCount,
@@ -575,7 +575,7 @@ export const getClassStats = async (classId) => {
     const turmaData = turmaDoc.data();
     const students = turmaData.students || [];
     const activeStudents = students.filter(
-      (student) => student.status === "active"
+      (student) => student.status === "active",
     );
 
     let totalStudentDays = 0;
@@ -604,12 +604,12 @@ export const getClassStats = async (classId) => {
           ? Math.round((presentCount / totalStudentDays) * 100)
           : 0,
       homeworkPercentage:
-        totalStudentDays > 0
-          ? Math.round((homeworkBrought / totalStudentDays) * 100)
+        presentCount > 0
+          ? Math.round((homeworkBrought / presentCount) * 100)
           : 0,
       backpackPercentage:
-        totalStudentDays > 0
-          ? Math.round((backpackBrought / totalStudentDays) * 100)
+        presentCount > 0
+          ? Math.round((backpackBrought / presentCount) * 100)
           : 0,
       presentCount,
       homeworkBrought,
@@ -638,7 +638,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       const turmaData = turma.data();
       const students = turmaData.students || [];
       const activeStudents = students.filter(
-        (student) => student.status === "active"
+        (student) => student.status === "active",
       );
 
       let classPresent = 0;
@@ -675,14 +675,16 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
         className: turmaData.name,
         students: classStudentDays,
         attendancePercentage: Math.round(
-          (classPresent / classStudentDays) * 100
+          (classPresent / classStudentDays) * 100,
         ),
-        homeworkPercentage: Math.round(
-          (classHomework / classStudentDays) * 100
-        ),
-        backpackPercentage: Math.round(
-          (classBackpack / classStudentDays) * 100
-        ),
+        homeworkPercentage:
+          classPresent > 0
+            ? Math.round((classHomework / classPresent) * 100)
+            : 0,
+        backpackPercentage:
+          classPresent > 0
+            ? Math.round((classBackpack / classPresent) * 100)
+            : 0,
       });
     }
 
@@ -694,12 +696,12 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
           ? Math.round((presentStudents / totalStudentDays) * 100)
           : 0,
       homeworkPercentage:
-        totalStudentDays > 0
-          ? Math.round((homeworkBrought / totalStudentDays) * 100)
+        presentStudents > 0
+          ? Math.round((homeworkBrought / presentStudents) * 100)
           : 0,
       backpackPercentage:
-        totalStudentDays > 0
-          ? Math.round((backpackBrought / totalStudentDays) * 100)
+        presentStudents > 0
+          ? Math.round((backpackBrought / presentStudents) * 100)
           : 0,
       classes: classesStat,
     };
@@ -712,7 +714,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
 // Estatísticas mensais
 export const getMonthlyStats = async (
   year = new Date().getFullYear(),
-  month = new Date().getMonth() + 1
+  month = new Date().getMonth() + 1,
 ) => {
   try {
     const endDate = new Date(year, month, 0);
@@ -735,21 +737,21 @@ export const getMonthlyStats = async (
       totalDays > 0
         ? Math.round(
             dailyStats.reduce((sum, day) => sum + day.attendancePercentage, 0) /
-              totalDays
+              totalDays,
           )
         : 0;
     const avgHomework =
       totalDays > 0
         ? Math.round(
             dailyStats.reduce((sum, day) => sum + day.homeworkPercentage, 0) /
-              totalDays
+              totalDays,
           )
         : 0;
     const avgBackpack =
       totalDays > 0
         ? Math.round(
             dailyStats.reduce((sum, day) => sum + day.backpackPercentage, 0) /
-              totalDays
+              totalDays,
           )
         : 0;
 
