@@ -559,7 +559,7 @@ export const getClassesByYear = async (year = new Date().getFullYear()) => {
 };
 
 // Estatísticas por turma específica
-export const getClassStats = async (classId) => {
+export const getClassStats = async (classId, year = null) => {
   try {
     if (!classId) {
       throw new Error("ID da turma é obrigatório");
@@ -585,7 +585,13 @@ export const getClassStats = async (classId) => {
 
     for (let student of activeStudents) {
       if (student.dailyRecords) {
-        const records = Object.values(student.dailyRecords);
+        // Filtrar por ano se especificado
+        const records = Object.entries(student.dailyRecords)
+          .filter(([date, record]) => {
+            if (year === null) return true;
+            return date.startsWith(`${year}-`);
+          })
+          .map(([date, record]) => record);
 
         for (let record of records) {
           totalStudentDays++;
@@ -596,7 +602,7 @@ export const getClassStats = async (classId) => {
       }
     }
 
-    return {
+    const result = {
       classId,
       totalRecords: totalStudentDays,
       attendancePercentage:
@@ -616,6 +622,8 @@ export const getClassStats = async (classId) => {
       backpackBrought,
       totalStudents: activeStudents.length,
     };
+
+    return result;
   } catch (error) {
     console.error("Error getting class stats:", error);
     return null;

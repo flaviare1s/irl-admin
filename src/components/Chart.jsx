@@ -36,6 +36,47 @@ const CustomLegend = () => {
   );
 };
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    // Ordem fixa: Frequência, Tarefa, Mochila
+    const orderedData = [
+      { name: 'Frequência', value: null, color: '#88B04B' },
+      { name: 'Tarefa', value: null, color: '#2E4DA7' },
+      { name: 'Mochila', value: null, color: '#FA7268' }
+    ];
+
+    // Mapear os dados do payload para a ordem correta
+    payload.forEach(item => {
+      if (item.dataKey === 'frequencia') {
+        orderedData[0].value = item.value;
+      } else if (item.dataKey === 'tarefa') {
+        orderedData[1].value = item.value;
+      } else if (item.dataKey === 'mochila') {
+        orderedData[2].value = item.value;
+      }
+    });
+
+    return (
+      <div style={{
+        backgroundColor: 'white',
+        padding: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '4px'
+      }}>
+        <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>{label}</p>
+        {orderedData.map((item, index) => (
+          item.value !== null && (
+            <p key={index} style={{ margin: '4px 0', fontSize: '14px' }}>
+              <span style={{ color: item.color }}>●</span> {item.name}: {item.value}%
+            </p>
+          )
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
 export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) => {
   if (!data || data.length === 0) {
     return (
@@ -166,14 +207,7 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis domain={[0, 100]} />
-          <Tooltip formatter={(value, name) => {
-            const labels = {
-              'frequencia': 'Frequência',
-              'tarefa': 'Tarefa',
-              'mochila': 'Mochila'
-            };
-            return [`${value}%`, labels[name] || name];
-          }} />
+          <Tooltip content={<CustomTooltip />} />
           <Legend content={<CustomLegend />} />
           <Bar dataKey="frequencia" fill="#88B04B" name="Frequência" />
           <Bar dataKey="tarefa" fill="#2E4DA7" name="Tarefa" />
