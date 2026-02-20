@@ -80,7 +80,7 @@ export const StudentDetails = () => {
       
       chartData.push({
         date: localDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
-        presente: isPresent ? 1 : 0,
+        ausente: !isPresent ? 1 : 0,  // 1 se ausente, 0 se presente
         tarefa: isPresent && broughtHomework ? 1 : 0,
         mochila: isPresent && broughtBackpack ? 1 : 0
       });
@@ -371,7 +371,7 @@ export const StudentDetails = () => {
                   <Tooltip
                     formatter={(value, name) => {
                       const labels = {
-                        'presente': 'Presente',
+                        'ausente': 'Ausente',
                         'tarefa': 'Trouxe Tarefa',
                         'mochila': 'Trouxe Mochila'
                       };
@@ -381,14 +381,14 @@ export const StudentDetails = () => {
                   <Legend
                     formatter={(value) => {
                       const labels = {
-                        'presente': 'Presente',
+                        'ausente': 'Ausente',
                         'tarefa': 'Trouxe Tarefa',
                         'mochila': 'Trouxe Mochila'
                       };
                       return labels[value] || value;
                     }}
                   />
-                  <Line type="monotone" dataKey="presente" stroke="#88B04B" strokeWidth={2} dot={{ r: 4 }} />
+                  <Line type="monotone" dataKey="ausente" stroke="#FA7268" strokeWidth={2} dot={{ r: 4 }} />
                   <Line type="monotone" dataKey="tarefa" stroke="#2E4DA7" strokeWidth={2} dot={{ r: 4 }} />
                   <Line type="monotone" dataKey="mochila" stroke="#F6C324" strokeWidth={2} dot={{ r: 4 }} />
                 </LineChart>
