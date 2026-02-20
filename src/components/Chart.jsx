@@ -339,10 +339,10 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
   });
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-white px-1 py-6 sm:p-6 rounded-lg shadow-sm border">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">{title}</h3>
-        <div className="text-sm text-gray-600">
+        <div className="text-xs text-gray-600 sm:text-sm mt-2 sm:mt-0">
           Média: Freq. {data.averageAttendancePercentage}% | Tarefa {data.averageHomeworkPercentage}% | Mochila {data.averageBackpackPercentage}%
         </div>
       </div>
