@@ -91,7 +91,46 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
     );
   }
 
-  const chartData = data.map(item => ({
+  // Função auxiliar para converter algarismos romanos em números
+  const romanToNumber = (roman) => {
+    const romanMap = {
+      'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5,
+      'VI': 6, 'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10,
+      'XI': 11, 'XII': 12, 'XIII': 13, 'XIV': 14, 'XV': 15
+    };
+    return romanMap[roman] || null;
+  };
+
+  // Ordenar os dados antes de mapear
+  const sortedData = [...data].sort((a, b) => {
+    const nameA = a.className || `Turma ${a.classId}`;
+    const nameB = b.className || `Turma ${b.classId}`;
+
+    // Tentar extrair número arábico primeiro (ex: "Turma 1", "Turma 2")
+    const arabicMatchA = nameA.match(/Turma\s+(\d+)/i);
+    const arabicMatchB = nameB.match(/Turma\s+(\d+)/i);
+
+    if (arabicMatchA && arabicMatchB) {
+      return parseInt(arabicMatchA[1]) - parseInt(arabicMatchB[1]);
+    }
+
+    // Tentar extrair algarismo romano (ex: "Turma I", "Turma II")
+    const romanMatchA = nameA.match(/Turma\s+([IVXL]+)/i);
+    const romanMatchB = nameB.match(/Turma\s+([IVXL]+)/i);
+
+    if (romanMatchA && romanMatchB) {
+      const numA = romanToNumber(romanMatchA[1].toUpperCase());
+      const numB = romanToNumber(romanMatchB[1].toUpperCase());
+      if (numA !== null && numB !== null) {
+        return numA - numB;
+      }
+    }
+
+    // Fallback: ordenação alfabética
+    return nameA.localeCompare(nameB);
+  });
+
+  const chartData = sortedData.map(item => ({
     name: item.className || `Turma ${item.classId}`,
     frequencia: item.attendancePercentage || 0,
     tarefa: item.homeworkPercentage || 0,
