@@ -77,7 +77,7 @@ export const StudentDetails = () => {
       // Parsear data manualmente para evitar problemas de timezone
       const [year, month, day] = date.split('-').map(Number);
       const localDate = new Date(year, month - 1, day);
-      
+
       chartData.push({
         date: localDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
         ausente: !isPresent ? 1 : 0,  // 1 se ausente, 0 se presente
@@ -360,13 +360,13 @@ export const StudentDetails = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm border">
               <h3 className="text-lg font-semibold mb-4">Histórico (Últimos registros)</h3>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={studentStats.chartData}>
+                <LineChart data={studentStats.chartData} margin={{ top: 10, right: 5, left: 5, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis 
-                    domain={[0, 1]} 
+                  <YAxis
+                    domain={[0, 1]}
                     ticks={[0, 1]}
-                    tickFormatter={(value) => value === 1 ? 'Sim' : 'Não'} 
+                    tickFormatter={(value) => value === 1 ? 'Sim' : 'Não'}
                   />
                   <Tooltip
                     formatter={(value, name) => {
@@ -388,9 +388,60 @@ export const StudentDetails = () => {
                       return labels[value] || value;
                     }}
                   />
-                  <Line type="monotone" dataKey="ausente" stroke="#FA7268" strokeWidth={2} dot={{ r: 4 }} />
-                  <Line type="monotone" dataKey="tarefa" stroke="#2E4DA7" strokeWidth={2} dot={{ r: 4 }} />
-                  <Line type="monotone" dataKey="mochila" stroke="#F6C324" strokeWidth={2} dot={{ r: 4 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="ausente"
+                    stroke="#FA7268"
+                    strokeWidth={2}
+                    dot={(props) => {
+                      const { cx, cy } = props;
+                      return (
+                        <circle
+                          cx={cx}
+                          cy={cy}
+                          r={5}
+                          fill="#FA7268"
+                          fillOpacity={0.8}
+                        />
+                      );
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="tarefa"
+                    stroke="#2E4DA7"
+                    strokeWidth={2}
+                    dot={(props) => {
+                      const { cx, cy } = props;
+                      return (
+                        <circle
+                          cx={cx}
+                          cy={cy - 3}
+                          r={5}
+                          fill="#2E4DA7"
+                          fillOpacity={0.8}
+                        />
+                      );
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="mochila"
+                    stroke="#F6C324"
+                    strokeWidth={2}
+                    dot={(props) => {
+                      const { cx, cy } = props;
+                      return (
+                        <circle
+                          cx={cx}
+                          cy={cy + 3}
+                          r={5}
+                          fill="#F6C324"
+                          fillOpacity={0.8}
+                        />
+                      );
+                    }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>

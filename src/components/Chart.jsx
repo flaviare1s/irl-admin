@@ -126,6 +126,18 @@ export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) 
             stroke="#88B04B"
             strokeWidth={2}
             name="Frequência"
+            dot={(props) => {
+              const { cx, cy } = props;
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={5}
+                  fill="#88B04B"
+                  fillOpacity={0.8}
+                />
+              );
+            }}
           />
           <Line
             type="monotone"
@@ -133,6 +145,18 @@ export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) 
             stroke="#2E4DA7"
             strokeWidth={2}
             name="Tarefa"
+            dot={(props) => {
+              const { cx, cy } = props;
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy - 3}
+                  r={5}
+                  fill="#2E4DA7"
+                  fillOpacity={0.8}
+                />
+              );
+            }}
           />
           <Line
             type="monotone"
@@ -140,6 +164,18 @@ export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) 
             stroke="#FA7268"
             strokeWidth={2}
             name="Mochila"
+            dot={(props) => {
+              const { cx, cy } = props;
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy + 3}
+                  r={5}
+                  fill="#FA7268"
+                  fillOpacity={0.8}
+                />
+              );
+            }}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -366,6 +402,18 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
             stroke="#88B04B"
             strokeWidth={2}
             name="Frequência"
+            dot={(props) => {
+              const { cx, cy } = props;
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={5}
+                  fill="#88B04B"
+                  fillOpacity={0.8}
+                />
+              );
+            }}
           />
           <Line
             type="monotone"
@@ -373,6 +421,18 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
             stroke="#2E4DA7"
             strokeWidth={2}
             name="Tarefa"
+            dot={(props) => {
+              const { cx, cy } = props;
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy - 3}
+                  r={5}
+                  fill="#2E4DA7"
+                  fillOpacity={0.8}
+                />
+              );
+            }}
           />
           <Line
             type="monotone"
@@ -380,6 +440,18 @@ export const MonthlyChart = ({ data, title = "Estatísticas mensais" }) => {
             stroke="#FA7268"
             strokeWidth={2}
             name="Mochila"
+            dot={(props) => {
+              const { cx, cy } = props;
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy + 3}
+                  r={5}
+                  fill="#FA7268"
+                  fillOpacity={0.8}
+                />
+              );
+            }}
           />
         </LineChart>
       </ResponsiveContainer>
