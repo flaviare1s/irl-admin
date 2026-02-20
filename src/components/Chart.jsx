@@ -16,6 +16,26 @@ import {
 
 const COLORS = ['#2E4DA7', '#FA7268', '#88B04B', '#F6C324'];
 
+const CustomLegend = () => {
+  // Ordem fixa para garantir: Frequência, Tarefa, Mochila
+  const orderedItems = [
+    { value: 'Frequência', color: '#88B04B' },
+    { value: 'Tarefa', color: '#2E4DA7' },
+    { value: 'Mochila', color: '#FA7268' }
+  ];
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', paddingTop: '20px' }}>
+      {orderedItems.map((item, index) => (
+        <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ width: '14px', height: '14px', backgroundColor: item.color, borderRadius: '2px' }}></div>
+          <span style={{ fontSize: '14px', color: '#666' }}>{item.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export const TrendChart = ({ data, title = "Tendência dos últimos 30 dias" }) => {
   if (!data || data.length === 0) {
     return (
@@ -154,7 +174,7 @@ export const ClassComparisonChart = ({ data, title = "Comparação entre turmas"
             };
             return [`${value}%`, labels[name] || name];
           }} />
-          <Legend />
+          <Legend content={<CustomLegend />} />
           <Bar dataKey="frequencia" fill="#88B04B" name="Frequência" />
           <Bar dataKey="tarefa" fill="#2E4DA7" name="Tarefa" />
           <Bar dataKey="mochila" fill="#FA7268" name="Mochila" />
