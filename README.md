@@ -7,7 +7,7 @@
 
 </div>
 
-Sistema de gestão educacional desenvolvido para o **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância** como parte do **Projeto de Extensão II (PEX II)** da faculdade Descomplica.
+Sistema de gestão educacional desenvolvido para o **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância**, criado no contexto do Projeto de Extensão II (PEX II) da **Faculdade Descomplica** e atualmente aprimorado no **Projeto de Extensão III (PEX III)**, a partir da utilização prática do sistema e das demandas identificadas pela ONG.
 
 ## 📋 Sobre o Projeto
 

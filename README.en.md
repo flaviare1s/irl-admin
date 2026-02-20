@@ -7,7 +7,7 @@
 
 </div>
 
-Educational management system developed for the **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância** (Dr. Rocha Lima Institute for Child Protection and Assistance) as part of the **Extension Project II (PEX II)** from Descomplica college.
+Educational management system developed for the **Instituto Dr. Rocha Lima de Proteção e Assistência à Infância**, created in the context of the Extension Project II (PEX II) at **Descomplica University** and currently being enhanced in **Extension Project III (PEX III)**, based on the system’s practical use and the needs identified by the NGO.
 
 ## 📋 About the Project
 
