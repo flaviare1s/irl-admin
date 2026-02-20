@@ -74,8 +74,12 @@ export const StudentDetails = () => {
         if (broughtBackpack) backpackDays++;
       }
 
+      // Parsear data manualmente para evitar problemas de timezone
+      const [year, month, day] = date.split('-').map(Number);
+      const localDate = new Date(year, month - 1, day);
+      
       chartData.push({
-        date: new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+        date: localDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
         presente: isPresent ? 1 : 0,
         tarefa: isPresent && broughtHomework ? 1 : 0,
         mochila: isPresent && broughtBackpack ? 1 : 0
