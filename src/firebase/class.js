@@ -12,6 +12,14 @@ import {
   Timestamp,
 } from "firebase/firestore";
 
+// Helper: Obtém data no formato YYYY-MM-DD no horário local
+const getLocalDateString = (date = new Date()) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 // --- Turmas ---
 // Criar turma
 export async function createClass(name, year) {
@@ -317,7 +325,7 @@ export async function removeStudent(turmaId, studentId) {
 // Obter alunos com registro do dia
 export async function getAttendanceByDate(
   turmaId,
-  date = new Date().toISOString().slice(0, 10),
+  date = getLocalDateString(),
 ) {
   try {
     if (!turmaId) {
@@ -420,7 +428,7 @@ export async function toggleStudentDailyField(
   turmaId,
   studentId,
   field,
-  date = new Date().toISOString().slice(0, 10),
+  date = getLocalDateString(),
 ) {
   try {
     if (!turmaId || !studentId || !field) {
@@ -651,6 +659,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
     let presentStudents = 0;
     let homeworkBrought = 0;
     let backpackBrought = 0;
+    let totalStudentsWithRecords = 0; // Contador de alunos com registro
     const classesStat = [];
 
     for (let turma of snapshot.docs) {
@@ -663,10 +672,12 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       let classPresent = 0;
       let classHomework = 0;
       let classBackpack = 0;
+      let classStudentsWithRecords = 0; // Contador por turma
       const classStudentDays = activeStudents.length; // Total de alunos ativos
 
       for (let student of activeStudents) {
         if (student.dailyRecords && student.dailyRecords[date]) {
+          classStudentsWithRecords++; // Aluno tem registro para este dia
           const record = student.dailyRecords[date];
 
           if (record.present === true) {
@@ -685,6 +696,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
 
       // Adicionar aos totais gerais
       totalStudentDays += classStudentDays;
+      totalStudentsWithRecords += classStudentsWithRecords;
       presentStudents += classPresent;
       homeworkBrought += classHomework;
       backpackBrought += classBackpack;
@@ -708,9 +720,10 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       });
     }
 
-    return {
+    const result = {
       date,
       totalStudents: totalStudentDays,
+      totalStudentsWithRecords, // Número de alunos que têm registro para este dia
       attendancePercentage:
         totalStudentDays > 0
           ? Math.round((presentStudents / totalStudentDays) * 100)
@@ -725,6 +738,8 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
           : 0,
       classes: classesStat,
     };
+
+    return result;
   } catch (error) {
     console.error("Error getting stats by date:", error);
     return null;
@@ -746,7 +761,8 @@ export const getMonthlyStats = async (
         .padStart(2, "0")}`;
       const dayStats = await getStatsByDate(currentDate, year);
 
-      if (dayStats && dayStats.totalStudents > 0) {
+      // Só incluir dias com registros reais (alunos que foram registrados)
+      if (dayStats && dayStats.totalStudentsWithRecords > 0) {
         dailyStats.push(dayStats);
       }
     }
@@ -799,10 +815,11 @@ export const getTrendStats = async () => {
     for (let i = 29; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      const dateString = date.toISOString().split("T")[0];
+      const dateString = getLocalDateString(date);
 
       const dayStats = await getStatsByDate(dateString, date.getFullYear());
-      if (dayStats && dayStats.totalStudents > 0) {
+      // Só incluir dias com registros reais
+      if (dayStats && dayStats.totalStudentsWithRecords > 0) {
         last30Days.push(dayStats);
       }
     }

@@ -17,11 +17,19 @@ import { Student } from "../components/Student";
 import { Loader } from "../components/Loader";
 import { EditClass } from "../components/EditClass";
 
+// Helper: Obtém data no formato YYYY-MM-DD no horário local
+const getLocalDateString = (date = new Date()) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const ClassDetails = () => {
   const { id: classId } = useParams();
   const [classData, setClassData] = useState(null);
   const [students, setStudents] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState(getLocalDateString());
   const [loading, setLoading] = useState(true);
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [newStudentName, setNewStudentName] = useState("");
