@@ -13,7 +13,7 @@ export const HomeworkMaterialModal = ({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-2">
             <BookOpen className="w-6 h-6 text-primary" />
-            <h2 className="text-xl font-semibold text-gray-900">Tarefa - {student.name}</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{student.name}</h2>
           </div>
           <button
             onClick={onClose}
