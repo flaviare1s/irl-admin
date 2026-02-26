@@ -52,7 +52,7 @@ export const Student = ({ student, onAttendanceChange, onHomeworkClick, classId 
                 : hasHomework
                   ? broughtMaterial
                     ? 'bg-blue-100 text-primary hover:bg-blue-200'
-                    : 'bg-orange-100 text-orange-600 hover:bg-orange-200'
+                    : 'bg-red-100 text-living-coral hover:bg-red-200'
                   : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
                 }`}
               title={
