@@ -1,4 +1,4 @@
-import { User, BookOpen, Backpack, UserCheck, UserX, Eye, Settings } from "lucide-react";
+import { User, BookOpen, Backpack, UserCheck, UserX, Eye, Settings, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const Student = ({ student, onAttendanceChange, onHomeworkClick, classId }) => {
@@ -47,7 +47,7 @@ export const Student = ({ student, onAttendanceChange, onHomeworkClick, classId 
             <button
               onClick={() => isPresent && onHomeworkClick(student.id)}
               disabled={!isPresent}
-              className={`p-1.5 rounded-full transition-colors ${!isPresent
+              className={`relative p-1.5 rounded-full transition-colors ${!isPresent
                 ? 'opacity-40 cursor-not-allowed bg-gray-100'
                 : hasHomework
                   ? broughtMaterial
@@ -66,6 +66,9 @@ export const Student = ({ student, onAttendanceChange, onHomeworkClick, classId 
               }
             >
               <BookOpen className="w-4 h-4" />
+              {hasHomework && !broughtMaterial && isPresent && (
+                <X className="w-7 h-7 absolute top-0 right-0 text-living-coral" strokeWidth={1.5} />
+              )}
             </button>
 
             <button

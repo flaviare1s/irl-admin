@@ -35,9 +35,10 @@ export const HomeworkMaterialModal = ({
                   onSave(true);
                   onClose();
                 }}
-                className={`flex-1 cursor-pointer py-2 px-4 rounded-lg border-2 transition-all ${broughtMaterial
-                  ? 'border-primary bg-blue-50 text-primary'
-                  : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                className={`flex-1 cursor-pointer py-2 px-4 rounded-lg border-2 transition-all ${
+                  broughtMaterial
+                    ? 'border-primary bg-blue-50 text-primary'
+                    : 'border-primary bg-blue-50 text-primary opacity-60 hover:opacity-100'
                   }`}
               >
                 <div className="flex items-center justify-center gap-2">
@@ -50,9 +51,10 @@ export const HomeworkMaterialModal = ({
                   onSave(false);
                   onClose();
                 }}
-                className={`flex-1 cursor-pointer py-2 px-4 rounded-lg border-2 transition-all ${!broughtMaterial
-                  ? 'border-living-coral bg-red-50 text-living-coral'
-                  : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                className={`flex-1 cursor-pointer py-2 px-4 rounded-lg border-2 transition-all ${
+                  !broughtMaterial
+                    ? 'border-living-coral bg-red-50 text-living-coral'
+                    : 'border-gray-300 hover:border-gray-400 text-gray-700'
                   }`}
               >
                 <div className="flex items-center justify-center gap-2">
