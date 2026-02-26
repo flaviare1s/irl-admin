@@ -16,6 +16,7 @@ import {
 import { Student } from "../components/Student";
 import { Loader } from "../components/Loader";
 import { EditClass } from "../components/EditClass";
+import { HomeworkMaterialModal } from "../components/HomeworkMaterialModal";
 
 // Helper: Obtém data no formato YYYY-MM-DD no horário local
 const getLocalDateString = (date = new Date()) => {
@@ -34,6 +35,7 @@ export const ClassDetails = () => {
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [newStudentName, setNewStudentName] = useState("");
   const [showEditClass, setShowEditClass] = useState(false);
+  const [homeworkModalStudent, setHomeworkModalStudent] = useState(null);
 
   const loadClassData = useCallback(async () => {
     try {
@@ -73,17 +75,78 @@ export const ClassDetails = () => {
     try {
       const student = students.find(s => s.id === studentId);
       const currentPresent = student.attendance?.isPresent || false;
-      const currentHomework = student.attendance?.broughtHomework || false;
+      const currentHasHomework = student.attendance?.hasHomework || false;
+      const currentBroughtMaterial = student.attendance?.broughtMaterial || false;
       const currentBackpack = student.attendance?.broughtBackpack || false;
 
       const newPresent = type === "present" ? value : currentPresent;
-      const newHomework = type === "homework" ? value : currentHomework;
+      const newHasHomework = type === "hasHomework" ? value : currentHasHomework;
+      const newBroughtMaterial = type === "broughtMaterial" ? value : currentBroughtMaterial;
       const newBackpack = type === "backpack" ? value : currentBackpack;
 
-      await addDailyAttendance(studentId, selectedDate, newPresent, newHomework, newBackpack, classId);
+      await addDailyAttendance(studentId, selectedDate, newPresent, newHasHomework, newBroughtMaterial, newBackpack, classId);
       loadAttendanceData();
     } catch (error) {
       console.error("Error updating attendance:", error);
+    }
+  };
+
+  const handleHomeworkClick = (studentId) => {
+    const student = students.find(s => s.id === studentId);
+    if (student) {
+      setHomeworkModalStudent(student);
+    }
+  };
+
+  const handleHomeworkModalSave = async (broughtMaterial) => {
+    if (!homeworkModalStudent) return;
+
+    try {
+      const student = homeworkModalStudent;
+      const currentPresent = student.attendance?.isPresent || false;
+      const currentBackpack = student.attendance?.broughtBackpack || false;
+
+      // Clicar no ícone = TEM tarefa (hasHomework = true)
+      await addDailyAttendance(
+        student.id,
+        selectedDate,
+        currentPresent,
+        true, // hasHomework = true
+        broughtMaterial,
+        currentBackpack,
+        classId
+      );
+
+      setHomeworkModalStudent(null);
+      loadAttendanceData();
+    } catch (error) {
+      console.error("Error updating homework:", error);
+    }
+  };
+
+  const handleRemoveHomework = async () => {
+    if (!homeworkModalStudent) return;
+
+    try {
+      const student = homeworkModalStudent;
+      const currentPresent = student.attendance?.isPresent || false;
+      const currentBackpack = student.attendance?.broughtBackpack || false;
+
+      // Remove a tarefa (hasHomework = false, broughtMaterial = false)
+      await addDailyAttendance(
+        student.id,
+        selectedDate,
+        currentPresent,
+        false, // hasHomework = false
+        false, // broughtMaterial = false
+        currentBackpack,
+        classId
+      );
+
+      setHomeworkModalStudent(null);
+      loadAttendanceData();
+    } catch (error) {
+      console.error("Error removing homework:", error);
     }
   };
 
@@ -206,6 +269,7 @@ export const ClassDetails = () => {
                 key={student.id}
                 student={student}
                 onAttendanceChange={handleAttendanceChange}
+                onHomeworkClick={handleHomeworkClick}
                 classId={classId}
               />
             ))}
@@ -224,6 +288,17 @@ export const ClassDetails = () => {
           classData={classData}
           onSave={handleSaveClass}
           onCancel={handleCancelEdit}
+        />
+      )}
+
+      {/* Modal de Tarefa/Material */}
+      {homeworkModalStudent && (
+        <HomeworkMaterialModal
+          student={homeworkModalStudent}
+          broughtMaterial={homeworkModalStudent.attendance?.broughtMaterial || false}
+          onClose={() => setHomeworkModalStudent(null)}
+          onSave={handleHomeworkModalSave}
+          onRemove={handleRemoveHomework}
         />
       )}
     </div>

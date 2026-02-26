@@ -1,9 +1,10 @@
 import { User, BookOpen, Backpack, UserCheck, UserX, Eye, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export const Student = ({ student, onAttendanceChange, classId }) => {
+export const Student = ({ student, onAttendanceChange, onHomeworkClick, classId }) => {
   const isPresent = student.attendance?.isPresent;
-  const broughtHomework = student.attendance?.broughtHomework;
+  const hasHomework = student.attendance?.hasHomework;
+  const broughtMaterial = student.attendance?.broughtMaterial;
   const broughtBackpack = student.attendance?.broughtBackpack;
 
   return (
@@ -26,52 +27,62 @@ export const Student = ({ student, onAttendanceChange, classId }) => {
           </div>
         </div>
       </div>
-      {student.status === 'active' && 
-      <div className="flex items-center justify-between">
-        {/* Attendance Toggle */}
-        <button
-          onClick={() => onAttendanceChange(student.id, "present", !isPresent)}
-          className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${isPresent
-            ? 'bg-green-100 text-green-700 hover:bg-green-200'
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-        >
-          {isPresent ? <UserCheck className="w-3 h-3" /> : <UserX className="w-3 h-3" />}
-          <span>{isPresent ? 'Presente' : 'Ausente'}</span>
-        </button>
-
-        {/* Homework and Backpack - only enabled if present */}
-        
-        <div className="flex items-center space-x-2">
+      {student.status === 'active' &&
+        <div className="flex items-center justify-between">
+          {/* Attendance Toggle */}
           <button
-            onClick={() => isPresent && onAttendanceChange(student.id, "homework", !broughtHomework)}
-            disabled={!isPresent}
-            className={`p-1.5 rounded-full transition-colors ${!isPresent
-              ? 'opacity-40 cursor-not-allowed bg-gray-100'
-              : broughtHomework
-                ? 'bg-blue-100 text-primary hover:bg-blue-200'
-                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+            onClick={() => onAttendanceChange(student.id, "present", !isPresent)}
+            className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${isPresent
+              ? 'bg-green-100 text-green-700 hover:bg-green-200'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
-            title={!isPresent ? 'Disponível apenas para alunos presentes' : broughtHomework ? 'Trouxe tarefa' : 'Não trouxe tarefa'}
           >
-            <BookOpen className="w-4 h-4" />
+            {isPresent ? <UserCheck className="w-3 h-3" /> : <UserX className="w-3 h-3" />}
+            <span>{isPresent ? 'Presente' : 'Ausente'}</span>
           </button>
 
-          <button
-            onClick={() => isPresent && onAttendanceChange(student.id, "backpack", !broughtBackpack)}
-            disabled={!isPresent}
-            className={`p-1.5 rounded-full transition-colors ${!isPresent
-              ? 'opacity-40 cursor-not-allowed bg-gray-100'
-              : broughtBackpack
-                ? 'bg-purple-100 text-radiant-orchid hover:bg-purple-200'
-                : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
-              }`}
-            title={!isPresent ? 'Disponível apenas para alunos presentes' : broughtBackpack ? 'Trouxe mochila' : 'Não trouxe mochila'}
-          >
-            <Backpack className="w-4 h-4" />
-          </button>
-        </div>
-      </div>}
+          {/* Homework and Backpack - only enabled if present */}
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => isPresent && onHomeworkClick(student.id)}
+              disabled={!isPresent}
+              className={`p-1.5 rounded-full transition-colors ${!isPresent
+                ? 'opacity-40 cursor-not-allowed bg-gray-100'
+                : hasHomework
+                  ? broughtMaterial
+                    ? 'bg-blue-100 text-primary hover:bg-blue-200'
+                    : 'bg-orange-100 text-orange-600 hover:bg-orange-200'
+                  : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                }`}
+              title={
+                !isPresent
+                  ? 'Disponível apenas para alunos presentes'
+                  : hasHomework
+                    ? broughtMaterial
+                      ? 'Tem tarefa e trouxe material'
+                      : 'Tem tarefa mas não trouxe material'
+                    : 'Não tem tarefa'
+              }
+            >
+              <BookOpen className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => isPresent && onAttendanceChange(student.id, "backpack", !broughtBackpack)}
+              disabled={!isPresent}
+              className={`p-1.5 rounded-full transition-colors ${!isPresent
+                ? 'opacity-40 cursor-not-allowed bg-gray-100'
+                : broughtBackpack
+                  ? 'bg-purple-100 text-radiant-orchid hover:bg-purple-200'
+                  : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                }`}
+              title={!isPresent ? 'Disponível apenas para alunos presentes' : broughtBackpack ? 'Trouxe mochila' : 'Não trouxe mochila'}
+            >
+              <Backpack className="w-4 h-4" />
+            </button>
+          </div>
+        </div>}
     </div>
   );
 };

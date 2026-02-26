@@ -59,18 +59,23 @@ export const StudentDetails = () => {
     }
 
     let presentDays = 0;
-    let homeworkDays = 0;
+    let hasHomeworkDays = 0;
+    let broughtMaterialDays = 0;
     let backpackDays = 0;
     const chartData = [];
 
     records.forEach(([date, record]) => {
       const isPresent = record.present === true;
-      const broughtHomework = record.homework === true;
+      const hasHomework = record.hasHomework === true;
+      const broughtMaterial = record.broughtMaterial === true;
       const broughtBackpack = record.backpack === true;
 
       if (isPresent) {
         presentDays++;
-        if (broughtHomework) homeworkDays++;
+        if (hasHomework) {
+          hasHomeworkDays++;
+          if (broughtMaterial) broughtMaterialDays++;
+        }
         if (broughtBackpack) backpackDays++;
       }
 
@@ -81,14 +86,14 @@ export const StudentDetails = () => {
       chartData.push({
         date: localDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
         ausente: !isPresent ? 1 : 0,  // 1 se ausente, 0 se presente
-        tarefa: isPresent && broughtHomework ? 1 : 0,
+        tarefa: isPresent && hasHomework && broughtMaterial ? 1 : 0,
         mochila: isPresent && broughtBackpack ? 1 : 0
       });
     });
 
     const totalDays = records.length;
     const attendancePercentage = Math.round((presentDays / totalDays) * 100);
-    const homeworkPercentage = presentDays > 0 ? Math.round((homeworkDays / presentDays) * 100) : 0;
+    const homeworkPercentage = hasHomeworkDays > 0 ? Math.round((broughtMaterialDays / hasHomeworkDays) * 100) : 0;
     const backpackPercentage = presentDays > 0 ? Math.round((backpackDays / presentDays) * 100) : 0;
 
     setStudentStats({
@@ -105,7 +110,7 @@ export const StudentDetails = () => {
           { name: 'Ausente', value: 100 - attendancePercentage, color: '#FA7268' }
         ],
         homework: [
-          { name: 'Trouxe Tarefa', value: homeworkPercentage, color: '#2E4DA7' },
+          { name: 'Trouxe Material', value: homeworkPercentage, color: '#2E4DA7' },
           { name: 'Não Trouxe', value: 100 - homeworkPercentage, color: '#FA7268' }
         ],
         backpack: [
@@ -291,7 +296,7 @@ export const StudentDetails = () => {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold mb-4 text-center">Tarefa</h3>
+              <h3 className="text-lg font-semibold mb-4 text-center">Material de Tarefa</h3>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
@@ -372,7 +377,7 @@ export const StudentDetails = () => {
                     formatter={(value, name) => {
                       const labels = {
                         'ausente': 'Ausente',
-                        'tarefa': 'Trouxe Tarefa',
+                        'tarefa': 'Trouxe Material',
                         'mochila': 'Trouxe Mochila'
                       };
                       return [value === 1 ? 'Sim' : 'Não', labels[name] || name];
@@ -382,7 +387,7 @@ export const StudentDetails = () => {
                     formatter={(value) => {
                       const labels = {
                         'ausente': 'Ausente',
-                        'tarefa': 'Trouxe Tarefa',
+                        'tarefa': 'Trouxe Material',
                         'mochila': 'Trouxe Mochila'
                       };
                       return labels[value] || value;

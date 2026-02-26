@@ -351,7 +351,9 @@ export async function getAttendanceByDate(
         student.dailyRecords && student.dailyRecords[date]
           ? {
               isPresent: student.dailyRecords[date].present || false,
-              broughtHomework: student.dailyRecords[date].homework || false,
+              hasHomework: student.dailyRecords[date].hasHomework || false,
+              broughtMaterial:
+                student.dailyRecords[date].broughtMaterial || false,
               broughtBackpack: student.dailyRecords[date].backpack || false,
             }
           : null,
@@ -367,7 +369,8 @@ export async function addDailyAttendance(
   studentId,
   date,
   isPresent,
-  broughtHomework,
+  hasHomework,
+  broughtMaterial,
   broughtBackpack,
   classId,
 ) {
@@ -392,7 +395,8 @@ export async function addDailyAttendance(
         const dailyRecords = student.dailyRecords || {};
         const newRecord = {
           present: Boolean(isPresent),
-          homework: Boolean(broughtHomework),
+          hasHomework: Boolean(hasHomework),
+          broughtMaterial: Boolean(broughtMaterial),
           backpack: Boolean(broughtBackpack),
           timestamp: Timestamp.now(),
         };
@@ -418,7 +422,14 @@ export async function addDailyAttendance(
       { merge: true },
     );
 
-    return { studentId, date, isPresent, broughtHomework, broughtBackpack };
+    return {
+      studentId,
+      date,
+      isPresent,
+      hasHomework,
+      broughtMaterial,
+      broughtBackpack,
+    };
   } catch (error) {
     console.error("Error adding attendance:", error);
     throw error;
@@ -494,7 +505,8 @@ export const getHomeworkBackpackStats = async (
 
     let totalStudentDays = 0;
     let presentCount = 0;
-    let homeworkBrought = 0;
+    let hasHomeworkCount = 0;
+    let broughtMaterialCount = 0;
     let backpackBrought = 0;
 
     for (let turma of snapshot.docs) {
@@ -513,7 +525,10 @@ export const getHomeworkBackpackStats = async (
             if (record.present === true) {
               presentCount++;
               // Só conta tarefa/mochila se estiver presente
-              if (record.homework === true) homeworkBrought++;
+              if (record.hasHomework === true) {
+                hasHomeworkCount++;
+                if (record.broughtMaterial === true) broughtMaterialCount++;
+              }
               if (record.backpack === true) backpackBrought++;
             }
           }
@@ -527,8 +542,8 @@ export const getHomeworkBackpackStats = async (
           ? Math.round((presentCount / totalStudentDays) * 100)
           : 0,
       homeworkPercentage:
-        presentCount > 0
-          ? Math.round((homeworkBrought / presentCount) * 100)
+        hasHomeworkCount > 0
+          ? Math.round((broughtMaterialCount / hasHomeworkCount) * 100)
           : 0,
       backpackPercentage:
         presentCount > 0
@@ -536,7 +551,7 @@ export const getHomeworkBackpackStats = async (
           : 0,
       totalRecords: totalStudentDays,
       presentCount,
-      homeworkBrought,
+      homeworkBrought: broughtMaterialCount,
       backpackBrought,
     };
   } catch (error) {
@@ -591,30 +606,35 @@ export const getClassStats = async (classId, year = null) => {
 
     let totalStudentDays = 0;
     let presentCount = 0;
-    let homeworkBrought = 0;
+    let hasHomeworkCount = 0;
+    let broughtMaterialCount = 0;
     let backpackBrought = 0;
 
     for (let student of activeStudents) {
       if (student.dailyRecords) {
         // Filtrar por ano se especificado
         const records = Object.entries(student.dailyRecords).filter(
-          ([date, record]) => {
+          ([date]) => {
             if (year === null) return true;
             return date.startsWith(`${year}-`);
           },
         );
 
-        for (let [date, record] of records) {
+        for (let [, record] of records) {
           totalStudentDays++;
 
           const isPresent = record.present === true;
-          const hasHomework = record.homework === true;
+          const hasHomework = record.hasHomework === true;
+          const broughtMaterial = record.broughtMaterial === true;
           const hasBackpack = record.backpack === true;
 
           if (isPresent) {
             presentCount++;
             // Só conta tarefa/mochila se estiver presente
-            if (hasHomework) homeworkBrought++;
+            if (hasHomework) {
+              hasHomeworkCount++;
+              if (broughtMaterial) broughtMaterialCount++;
+            }
             if (hasBackpack) backpackBrought++;
           }
         }
@@ -629,15 +649,15 @@ export const getClassStats = async (classId, year = null) => {
           ? Math.round((presentCount / totalStudentDays) * 100)
           : 0,
       homeworkPercentage:
-        presentCount > 0
-          ? Math.round((homeworkBrought / presentCount) * 100)
+        hasHomeworkCount > 0
+          ? Math.round((broughtMaterialCount / hasHomeworkCount) * 100)
           : 0,
       backpackPercentage:
         presentCount > 0
           ? Math.round((backpackBrought / presentCount) * 100)
           : 0,
       presentCount,
-      homeworkBrought,
+      homeworkBrought: broughtMaterialCount,
       backpackBrought,
       totalStudents: activeStudents.length,
     };
@@ -670,7 +690,8 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       );
 
       let classPresent = 0;
-      let classHomework = 0;
+      let classHasHomework = 0;
+      let classBroughtMaterial = 0;
       let classBackpack = 0;
       let classStudentsWithRecords = 0; // Contador por turma
       const classStudentDays = activeStudents.length; // Total de alunos ativos
@@ -683,8 +704,11 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
           if (record.present === true) {
             classPresent++;
             // Só conta tarefa/mochila se estiver presente
-            if (record.homework === true) {
-              classHomework++;
+            if (record.hasHomework === true) {
+              classHasHomework++;
+              if (record.broughtMaterial === true) {
+                classBroughtMaterial++;
+              }
             }
             if (record.backpack === true) {
               classBackpack++;
@@ -698,7 +722,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
       totalStudentDays += classStudentDays;
       totalStudentsWithRecords += classStudentsWithRecords;
       presentStudents += classPresent;
-      homeworkBrought += classHomework;
+      homeworkBrought += classBroughtMaterial;
       backpackBrought += classBackpack;
 
       // Sempre adicionar estatísticas da turma (mesmo com 0 registros)
@@ -710,8 +734,8 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
           (classPresent / classStudentDays) * 100,
         ),
         homeworkPercentage:
-          classPresent > 0
-            ? Math.round((classHomework / classPresent) * 100)
+          classHasHomework > 0
+            ? Math.round((classBroughtMaterial / classHasHomework) * 100)
             : 0,
         backpackPercentage:
           classPresent > 0
@@ -729,7 +753,7 @@ export const getStatsByDate = async (date, year = new Date().getFullYear()) => {
           ? Math.round((presentStudents / totalStudentDays) * 100)
           : 0,
       homeworkPercentage:
-        presentStudents > 0
+        homeworkBrought > 0
           ? Math.round((homeworkBrought / presentStudents) * 100)
           : 0,
       backpackPercentage:
